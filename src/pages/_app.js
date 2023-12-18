@@ -1,5 +1,18 @@
 import '@/styles/globals.css'
+import Head from 'next/head';
 
-export default function App({ Component, pageProps }) {
-  return <Component {...pageProps} />
+function App({ Component, pageProps }) {
+  return (
+    <>
+      <Head>
+       
+        <title>Nouncillors</title>
+
+      </Head>
+
+      <Component {...pageProps} />
+    </>
+  );
 }
+
+export default App;
