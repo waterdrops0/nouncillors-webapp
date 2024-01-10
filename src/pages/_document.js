@@ -14,7 +14,8 @@ export default function Document() {
             crossOrigin="anonymous"
           />
         </Head>
-        <body className="flex flex-col w-full h-full overflow-hidden bg-beige selection:bg-red selection:text-white">
+        <div id="backdrop-root"></div>
+        <body className="">
           <Main />
           <NextScript />
         </body>

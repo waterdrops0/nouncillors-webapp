@@ -3,7 +3,7 @@ import { createInstance } from './forwarder';
 import { signMetaTxRequest } from './signer';
 import { fetchProof } from './fetchProof';
 
-async function sendMetaTx(receiver, provider, signer, proof) {
+async function sendMetaTx(receiver, provider, signer, proof, seed) {
   console.log(`Sending mint meta-tx with proof=${proof}`);
   const url = 'https://api.defender.openzeppelin.com/autotasks/5a315aa2-c9dc-4a10-b633-14860b7796f8/runs/webhook/db212240-681e-4a15-adbe-0577807ea1b5/WjYUohJcYZA72jYbTpHreu';
   if (!url) throw new Error(`Missing relayer url`);
@@ -11,7 +11,7 @@ async function sendMetaTx(receiver, provider, signer, proof) {
   const forwarder = createInstance(provider);
   const from = await signer.getAddress();
   console.log("The *from* address is: ", from);
-  const data = receiver.interface.encodeFunctionData('mint', [proof]);
+  const data = receiver.interface.encodeFunctionData('mint', [proof, seed]);
   console.log("The *data* is: ", data);
   const to = await receiver.getAddress();
   console.log("The *to* address is: ", to);
@@ -26,7 +26,7 @@ async function sendMetaTx(receiver, provider, signer, proof) {
     });
 }
 
-export async function mint(receiver, provider) {
+export async function mint(receiver, provider, seed) {
   if (!window.ethereum) throw new Error(`User wallet not found`);
   await window.ethereum.enable();
 
@@ -45,5 +45,5 @@ export async function mint(receiver, provider) {
   
   
   
-  return sendMetaTx(receiver, provider, signer, proof);
+  return sendMetaTx(receiver, provider, signer, proof, seed);
 }

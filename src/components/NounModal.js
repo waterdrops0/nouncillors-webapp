@@ -1,25 +1,23 @@
 import { Button } from 'react-bootstrap';
-import classes from './NounModal.module.css';
+import classes from '../styles/NounModal.module.css';
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import Noun from './Noun';
-import { svg2png } from '../../../utils/svg2png';
+import { svg2png } from './Utils/svg2png';
 import { Backdrop } from './Modal';
 
-const downloadNounPNG = (png: string) => {
+const downloadNounPNG = (png) => {
   const downloadEl = document.createElement('a');
   downloadEl.href = png;
   downloadEl.download = 'noun.png';
   downloadEl.click();
 };
 
-const NounModal: React.FC<{ onDismiss: () => void; svg: string }> = props => {
-  const { onDismiss, svg } = props;
+const NounModal = ({ onDismiss, svg }) => {
+  const [width, setWidth] = useState(window.innerWidth);
+  const [png, setPng] = useState(null);
 
-  const [width, setWidth] = useState<number>(window.innerWidth);
-  const [png, setPng] = useState<string | null>();
-
-  const isMobile: boolean = width <= 991;
+  const isMobile = width <= 991;
 
   const handleWindowSizeChange = () => {
     setWidth(window.innerWidth);
@@ -41,12 +39,8 @@ const NounModal: React.FC<{ onDismiss: () => void; svg: string }> = props => {
   return (
     <>
       {ReactDOM.createPortal(
-        <Backdrop
-          onDismiss={() => {
-            onDismiss();
-          }}
-        />,
-        document.getElementById('backdrop-root')!,
+        <Backdrop onDismiss={onDismiss} />,
+        document.getElementById('backdrop-root')
       )}
       {ReactDOM.createPortal(
         <div className={classes.modal}>
@@ -59,21 +53,16 @@ const NounModal: React.FC<{ onDismiss: () => void; svg: string }> = props => {
             />
           )}
           <div className={classes.displayNounFooter}>
-            <span>Use this Noun as your profile picture!</span>
+            <span>Use this Nouncillor as your profile picture!</span>
             {!isMobile && png && (
-              <Button
-                onClick={() => {
-                  downloadNounPNG(png);
-                }}
-              >
-                Download
-              </Button>
+              <Button onClick={() => downloadNounPNG(png)}>Download</Button>
             )}
           </div>
         </div>,
-        document.getElementById('overlay-root')!,
+        document.getElementById('backdrop-root')
       )}
     </>
   );
 };
+
 export default NounModal;

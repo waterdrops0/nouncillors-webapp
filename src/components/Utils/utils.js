@@ -1,14 +1,12 @@
-import { NounSeed, NounData } from './types';
-import { images, bgcolors } from '../../data/image-data.json';
+import imageData from '../../data/image-data.json';
 
-const { bodies, accessories, heads, glasses } = images;
-
+const { bodies, accessories, heads, glasses } = imageData.images;
 
 /**
  * Get encoded part and background information using a Noun seed
  * @param seed The Noun seed
  */
-export const getNounData = (seed: NounSeed): NounData => {
+export const getNounData = (seed) => {
   return {
     parts: [
       bodies[seed.body],
@@ -16,17 +14,16 @@ export const getNounData = (seed: NounSeed): NounData => {
       heads[seed.head],
       glasses[seed.glasses],
     ],
-    background: bgcolors[seed.background],
+    background: imageData.bgcolors[seed.background],
   };
 };
 
 /**
  * Generate a random Noun seed
- * @param seed The Noun seed
  */
-export const getRandomNounSeed = (): NounSeed => {
+export const getRandomNounSeed = () => {
   return {
-    background: Math.floor(Math.random() * bgcolors.length),
+    background: Math.floor(Math.random() * imageData.bgcolors.length),
     body: Math.floor(Math.random() * bodies.length),
     accessory: Math.floor(Math.random() * accessories.length),
     head: Math.floor(Math.random() * heads.length),
@@ -34,15 +31,13 @@ export const getRandomNounSeed = (): NounSeed => {
   };
 };
 
-// ---
-
 /**
- * Convert the provided number to a passed hex string
- * @param c
+ * Convert the provided number to a padded hex string
+ * @param num The number to convert
  * @param pad The desired number of chars in the hex string
  */
-export const toPaddedHex = (c: number, pad = 2): string => {
-  return c.toString(16).padStart(pad, '0');
+export const toPaddedHex = (num, pad = 2) => {
+  return num.toString(16).padStart(pad, '0');
 };
 
 /**
@@ -51,6 +46,6 @@ export const toPaddedHex = (c: number, pad = 2): string => {
  * @param g The green value
  * @param b The blue value
  */
-export const rgbToHex = (r: number, g: number, b: number): string => {
+export const rgbToHex = (r, g, b) => {
   return `${toPaddedHex(r)}${toPaddedHex(g)}${toPaddedHex(b)}`;
 };

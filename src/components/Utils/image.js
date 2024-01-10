@@ -1,4 +1,3 @@
-import { ImageBounds, RGBAColor } from './types';
 import { rgbToHex, toPaddedHex } from './utils';
 
 /**
@@ -8,35 +7,30 @@ import { rgbToHex, toPaddedHex } from './utils';
  * As opposed to the first encoding version, this supports multiline run-length encoding
  */
 export class Image {
-  private _width: number;
-  private _height: number;
-  private _bounds: ImageBounds = { top: 0, bottom: 0, left: 0, right: 0 };
-  public tuples: number[][] = [];
-  private _getRgbaAt: (x: number, y: number) => RGBAColor;
-
-  constructor(width: number, height: number, getRgbaAt: (x: number, y: number) => RGBAColor) {
+  constructor(width, height, getRgbaAt) {
     this._width = width;
     this._height = height;
-
+    this._bounds = { top: 0, bottom: 0, left: 0, right: 0 };
+    this.tuples = [];
     this._getRgbaAt = getRgbaAt;
   }
 
-  get height(): number {
+  get height() {
     return this._height;
   }
 
-  get width(): number {
+  get width() {
     return this._width;
   }
 
-  get bounds(): ImageBounds {
+  get bounds() {
     return this._bounds;
   }
 
-  public toRLE(colors: Map<string, number>): string {
+  toRLE(colors) {
     this._bounds = this.calcBounds();
 
-    const indexes: number[] = [];
+    const indexes = [];
 
     for (let y = this.bounds.top; y <= this.bounds.bottom; y++) {
       for (let x = this.bounds.left; x < this.bounds.right; x++) {
@@ -49,7 +43,7 @@ export class Image {
         }
 
         // If alpha is 0, use 'transparent' index, otherwise get color index
-        indexes.push(a === 0 ? 0 : colors.get(hexColor)!);
+        indexes.push(a === 0 ? 0 : colors.get(hexColor));
       }
     }
 
@@ -68,8 +62,8 @@ export class Image {
    * Given a numeric array, return a string of padded hex run-length encoded values
    * @param data The numeric array to run-length encode
    */
-  private encode(data: number[]) {
-    const encoding: string[] = [];
+  encode(data) {
+    const encoding = [];
     let previous = data[0];
     let count = 1;
 
@@ -90,7 +84,7 @@ export class Image {
     return encoding.join('');
   }
 
-  calcBounds(): ImageBounds {
+  calcBounds() {
     let bottom = this.height - 1;
     while (bottom > 0 && this._isTransparentRow(bottom)) {
       bottom--;
@@ -119,7 +113,7 @@ export class Image {
     };
   }
 
-  private _isTransparentColumn(column: number) {
+  _isTransparentColumn(column) {
     for (let row = 0; row < this.height; row++) {
       if (this._getRgbaAt(column, row).a !== 0) {
         return false;
@@ -128,7 +122,7 @@ export class Image {
     return true;
   }
 
-  private _isTransparentRow(row: number) {
+  _isTransparentRow(row) {
     for (let column = 0; column < this.width; column++) {
       if (this._getRgbaAt(column, row).a !== 0) {
         return false;

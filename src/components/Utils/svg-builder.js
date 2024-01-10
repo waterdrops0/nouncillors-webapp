@@ -1,10 +1,8 @@
-import { DecodedImage } from './types';
-
 /**
  * Decode the RLE image data into a format that's easier to consume in `buildSVG`.
  * @param image The RLE image data
  */
-export const decodeImage = (image: string): DecodedImage => {
+export const decodeImage = (image) => {
   const data = image.replace(/^0x/, '');
   const paletteIndex = parseInt(data.substring(0, 2), 16);
   const bounds = {
@@ -20,17 +18,16 @@ export const decodeImage = (image: string): DecodedImage => {
     bounds,
     rects:
       rects
-        ?.match(/.{1,4}/g)
-        ?.map(rect => [parseInt(rect.substring(0, 2), 16), parseInt(rect.substring(2, 4), 16)]) ??
-      [],
+        .match(/.{1,4}/g)
+        .map(rect => [parseInt(rect.substring(0, 2), 16), parseInt(rect.substring(2, 4), 16)]) || [],
   };
 };
 
 /**
- * @notice Given an x-coordinate, draw length, and right bound, return the draw
+ * Given an x-coordinate, draw length, and right bound, return the draw
  * length for a single SVG rectangle.
  */
-const getRectLength = (currentX: number, drawLength: number, rightBound: number): number => {
+const getRectLength = (currentX, drawLength, rightBound) => {
   const remainingPixelsInLine = rightBound - currentX;
   return drawLength <= remainingPixelsInLine ? drawLength : remainingPixelsInLine;
 };
@@ -41,13 +38,15 @@ const getRectLength = (currentX: number, drawLength: number, rightBound: number)
  * @param paletteColors The hex palette colors
  * @param bgColor The hex background color
  */
-export const buildSVG = (
-  parts: { data: string }[],
-  paletteColors: string[],
-  bgColor?: string,
-): string => {
+export const buildSVG = (parts, paletteColors, bgColor) => {
   const svgWithoutEndTag = parts.reduce((result, part) => {
-    const svgRects: string[] = [];
+
+    if (part.data === '0x0000000000') {
+      return result; 
+    }
+
+    const svgRects = [];
+    console.log(svgRects);
     const { bounds, rects } = decodeImage(part.data);
 
     let currentX = bounds.left;
@@ -60,12 +59,9 @@ export const buildSVG = (
 
       let length = getRectLength(currentX, drawLength, bounds.right);
       while (length > 0) {
-        // Do not push rect if transparent
         if (colorIndex !== 0) {
           svgRects.push(
-            `<rect width="${length * 10}" height="10" x="${currentX * 10}" y="${
-              currentY * 10
-            }" fill="#${hexColor}" />`,
+            `<rect width="${length * 10}" height="10" x="${currentX * 10}" y="${currentY * 10}" fill="#${hexColor}" />`,
           );
         }
 
@@ -85,3 +81,4 @@ export const buildSVG = (
 
   return `${svgWithoutEndTag}</svg>`;
 };
+

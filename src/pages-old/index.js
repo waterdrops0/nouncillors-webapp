@@ -1,27 +1,26 @@
-import { EthereumContext } from '../eth/context';
-import { createProvider } from '../eth/provider';
-import { createInstance } from '../eth/receiver';
-
-import Mint from '../components/Mint';
-
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import Banner from '../components/Banner';
 import Header from '../components/Header';
 import Delegated from'../components/Delegated';
 import Socials from '../components/Socials';
+import Link from 'next/link';
 
-
-const MintPage = () => {
-  const provider = createProvider();
-  const receiver = createInstance(provider);
-  const ethereumContext = { provider, receiver };
-
+const Home = () => {
   return (
      <>
+   <div className="flex flex-col w-full h-full overflow-hidden bg-beige selection:bg-red selection:text-white">
      <Banner />
-     <div className="w-full flex flex-col h-full">
+     
+        <Link href="/mint" passHref>
+          <button className="cursor-pointer flex w-full items-center justify-center px-9 py-2 bg-black hover:bg-maroon transition-colors duration-300 text-white font-semibold">
+            Mint
+          </button>
+      </Link>
+
+     <div className="w-full flex flex-col h-screen">
+  
+
       <Header />
+    
       <main
         className="h-full w-full flex flex-col gap-4 items-center justify-between"
       >
@@ -40,14 +39,6 @@ const MintPage = () => {
               href="https://nouns.wtf"
               className="text-red font-semibold">NounsDAO</a> to proliferate CC0 and nounish culture.
           </p>
-
-          <p>powered by wd_</p>
-            <EthereumContext.Provider value={ethereumContext}>
-              <Mint />
-            </EthereumContext.Provider>
-            <ToastContainer hideProgressBar={true} />
-
-
           <div
             className="max-md:flex items-center gap-8 max-[500px]:flex-col hidden mt-4"
           >
@@ -62,8 +53,9 @@ const MintPage = () => {
           draggable={false}
           className="select-none object-contain max-lg:object-cover" />
       </main>
+    </div>
     </div></>
   );
 };
 
-export default MintPage;
+export default Home;

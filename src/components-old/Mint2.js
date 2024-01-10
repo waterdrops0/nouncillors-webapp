@@ -1,13 +1,13 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { getNounData, getRandomNounSeed } from './Utils/utils.js';
+import { getNounData, getRandomNounSeed } from '../components/Utils/utils.js';
 import ImageData from '../data/image-data.json';
-import { buildSVG } from './Utils/svg-builder.js';
-import { buildSVGForSinglePart } from './Utils/svg-builder2.js';
-import { PNGCollectionEncoder } from './Utils/png-collection-encoder.js'
-import Noun from './Noun.js';
-import NounModal from './NounModal.js';
-import ScrollContainer from './ScrollContainer.js'
-import SimpleContainer from './SimpleContainer.js'
+import { buildSVG } from '../components/Utils/svg-builder.js';
+import { buildSVGForSinglePart } from '../components/Utils/svg-builder2.js';
+import { PNGCollectionEncoder } from '../components/Utils/png-collection-encoder.js'
+import Noun from '../components/Noun.js';
+import NounModal from '../components/NounModal.js';
+import ScrollContainer from '../components/ScrollContainer.js'
+import SimpleContainer from '../components/SimpleContainer.js'
 import { mint } from '../eth/mint.js';
 import { EthereumContext } from "../eth/context.js";
 import { toast } from 'react-toastify';
@@ -40,6 +40,7 @@ const Mint = () => {
     
     try {
       const seed = { ...getRandomNounSeed(), ...modSeed}
+      console.log("The final seed is:", seed);
       const response = await mint(receiver, provider, seed);
       const hash = response.hash;
       const onClick = hash
@@ -98,7 +99,7 @@ const displayBackgrounds = (images) => {
   const newBackground = [];
 
   images.forEach((background, i) => {
-    const svgData = `<svg width="75" height="75" xmlns="http://www.w3.org/2000/svg">
+    const svgData = `<svg width="300" height="300" xmlns="http://www.w3.org/2000/svg">
                        <rect width="100%" height="100%" fill="#${background}" />
                      </svg>`;
     newBackground.push({ id: i, svgData });
@@ -131,27 +132,46 @@ return (
       />
     )}
 
-      <div className="flex flex-col h-[90vh] gap-3 items-center justify-center md:flex-row">
+    <div className="px-20 py-5 min-h-fit h-screen w-screen overflow-hidden">
+      {/* Banner */}
+      <div className="flex items-center justify-center gap-3 py-4 border-[4px] border-solid border-transparent border-b-red">
+        <a href="/">
+          <img
+            src="/logo.webp"
+            alt="Nouncil Logo"
+            className="w-24 h-24 select-none"
+            draggable={false}
+          />
+        </a>
+        <h1 className="text-3xl text-white font-crimson-pro font-semibold mr-1">Nouncil</h1>
+        <h2 className="text-3xl text-green font-crimson-pro font-bold px-5 py-2 rounded-xl bg-red">NFT</h2>
+      </div>
 
-
+      <div className="flex flex-row h-full">
         {/* Left Half: Main Content Area for Displaying Generated Noun */}
-        <div className="w-2/3 overflow-hidden p-4 bg-gray-500 md:w-1/3">
+        <div className="flex-1 overflow-hidden">
           {nounSvg && (
-            <div className="hover:cursor-pointer">
+            <div className="hover:cursor-pointer" onClick={() => setDisplayNoun(true)}>
               <Noun imgPath={`data:image/svg+xml;base64,${btoa(nounSvg)}`} alt="noun" className="" />
             </div>
           )}
         </div>
 
         {/* Right Half: Sidebar for Traits */}
-        <div className="flex flex-col w-2/3 overflow-auto p-4 bg-gray-400 md:w-1/3 gap-2">
-      
+        <div className="flex-1 bg-gray-900 p-20 overflow-x-auto flex flex-col">
+          <h2 className="text-2xl font-bold text-white mb-4">Create your base Nouncillors NFT</h2>
+          <p className="text-white mb-4">
+            Unlock more you contribute to Nouns. A Nouncillor's traits can't be changed after initial minting.
+          </p>
+
           {/* Heads Traits Section */}
-              <div className="bg-gray-300 p-2">
+              <div className="flex-grow mb-6">
+                <h3 className="text-left text-xl text-white mb-1">Head</h3>
+                <span className="text-yellow-400 text-sm mb-2 block">Permanent trait. This can't be changed after minting.</span>
                 <ScrollContainer>
                   {head.map((head) => (
-                    <div key={head.id} className={`rounded-lg hover:cursor-pointer ${
-                selectedHead === head.id ? 'border-2 border-blue-500 bg-blue-200' : '' // Conditional styling
+                    <div key={head.id} className={`rounded-lg hover:cursor-pointer hover:scale-105 transition-transform ${
+                selectedHead === head.id ? 'border-2 border-blue-500 bg-blue-500 hover:scale-102' : '' // Conditional styling
               }`}
                       onClick={() => {
                 setModSeed(prev => ({ ...prev, head: head.id }));
@@ -164,11 +184,13 @@ return (
               </div>
 
               {/* Glasses Traits Section */}
-              <div className="bg-gray-300 p-2">
+              <div className="flex-grow mb-6">
+                <h3 className="text-left text-xl text-white mb-1">Glasses</h3>
+                <span className="text-yellow-400 text-sm mb-2 block">Permanent trait. This can't be changed after minting.</span>
                 <ScrollContainer>
                   {glasses.map((glasses) => (
-                    <div key={glasses.id} className={`rounded-lg hover:cursor-pointer ${
-                        selectedGlasses === glasses.id ? 'border-2 border-blue-500 bg-blue-200' : '' // Conditional styling
+                    <div key={glasses.id} className={`rounded-lg hover:cursor-pointer hover:scale-105 transition-transform ${
+                        selectedGlasses === glasses.id ? 'border-2 border-blue-500 bg-blue-500 hover:scale-102' : '' // Conditional styling
                       }`}
                               onClick={() => {
                         setModSeed(prev => ({ ...prev, glasses: glasses.id }));
@@ -181,22 +203,25 @@ return (
               </div>
 
               {/* Backgrounds Section */}
-              <div className="bg-gray-300 p-2">
+              <div className="flex-grow mb-6">
+                <h3 className="text-left text-xl text-white mb-1">Background</h3>
+                <span className="text-yellow-400 text-sm mb-2 block">Permanent trait. This can't be changed after minting.</span>
                 <SimpleContainer>
                   {background.map((background) => (
-                    <div key={background.id} className="rounded-lg hover:cursor-pointer hover:scale-105 transition-transform border border-2"
+                    <div key={background.id} className="rounded-lg hover:cursor-pointer hover:scale-105 transition-transform"
                         onClick={() => setModSeed(prev => ({ ...prev, background: background.id }))} dangerouslySetInnerHTML={{ __html: background.svgData }} />
                   ))}
                 </SimpleContainer>
               </div>
 
-          <div className="">
+          <div className="flex-grow mb-20">
         
-          <button className="cursor-pointer bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 w-full border border-gray-400 rounded shadow" onClick={sendTx} type="mint" disabled={loading}>{loading ? 'Minting...' : 'Mint'}</button>
+          <button className="cursor-pointer px-5 py-2 rounded-xl bg-red hover:bg-maroon transition-colors duration-300 text-white text-3xl font-crimson-pro font-bold" onClick={sendTx} type="mint" disabled={loading}>{loading ? 'Minting...' : 'Mint'}</button>
         
           </div>
         </div>
       </div>
+    </div>
   </>
 );
         }

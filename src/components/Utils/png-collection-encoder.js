@@ -1,33 +1,30 @@
-import { promises as fs } from 'fs';
-import { EncodedImage, IEncoder, ImageData, PngImage } from './types';
+//import { promises as fs } from 'fs';
 import { Image } from './image';
 
 /**
  * A class used to convert PNG images into the following RLE format:
  * Palette Index, Bounds [Top (Y), Right (X), Bottom (Y), Left (X)] (4 Bytes), [Pixel Length (1 Byte), Color Index (1 Byte)][].
  */
-export class PNGCollectionEncoder implements IEncoder {
-  private readonly _transparent: [string, number] = ['', 0];
-  private _colors: Map<string, number> = new Map([this._transparent]);
-  private _images: Map<string, string> = new Map();
-  private _folders: { [name: string]: string[] } = {};
-
-  constructor(colors?: string[]) {
-    // Optionally pre-populate colors with an existing palette
-    colors?.forEach((color, index) => this._colors.set(color, index));
+export class PNGCollectionEncoder {
+  constructor(colors = []) {
+    this._transparent = ['', 0];
+    this._colors = new Map([this._transparent]);
+    colors.forEach((color, index) => this._colors.set(color, index));
+    this._images = new Map();
+    this._folders = {};
   }
 
   /**
    * The flattened run-length encoded image data
    */
-  public get images(): EncodedImage[] {
+  get images() {
     return this.format(true).root;
   }
 
   /**
    * The run-length encoded image data and file names in their respective folders
    */
-  public get data(): ImageData {
+  get data() {
     return { palette: [...this._colors.keys()], images: this.format() };
   }
 
@@ -37,14 +34,13 @@ export class PNGCollectionEncoder implements IEncoder {
    * @param png The png image data
    * @param folder An optional containing folder name
    */
-  public encodeImage(name: string, png: PngImage, folder?: string): string {
+    encodeImage(name, png, folder = null) {
     const image = new Image(png.width, png.height, png.rgbaAt);
     const rle = image.toRLE(this._colors);
 
     this._images.set(name, rle);
-
     if (folder) {
-      (this._folders[folder] ||= []).push(name);
+      (this._folders[folder] = this._folders[folder] || []).push(name);
     }
 
     return rle;
@@ -54,32 +50,33 @@ export class PNGCollectionEncoder implements IEncoder {
    * Write the color palette and encoded part information to a JSON file
    * @param outputFile The output file path and name
    */
-  public async writeToFile(outputFile = 'encoded-images.json'): Promise<void> {
+  /*
+  async writeToFile(outputFile = 'encoded-images.json') {
     await fs.writeFile(outputFile, JSON.stringify(this.data, null, 2));
   }
+  */
+
+
 
   /**
    * Return an object that contains all encoded images in their respective folders.
    * @param flatten Whether all image data should be flattened (no sub-folders)
    */
-  private format(flatten = false) {
+  format(flatten = false) {
     const images = new Map(this._images);
     const folders = Object.entries(this._folders);
 
-    let data: Record<string, EncodedImage[]> = {};
+    let data = {};
     if (!flatten && folders.length) {
-      data = folders.reduce<Record<string, EncodedImage[]>>((result, [folder, filenames]) => {
+      data = folders.reduce((result, [folder, filenames]) => {
         result[folder] = [];
-
-        // Write all files to the folder, delete from the Map once written.
         filenames.forEach(filename => {
           result[folder].push({
             filename,
-            data: images.get(filename) as string,
+            data: images.get(filename),
           });
           images.delete(filename);
         });
-
         return result;
       }, {});
     }

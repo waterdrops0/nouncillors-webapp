@@ -6,44 +6,46 @@ import {
   FloatingLabel,
   Form,
 } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { getNounData, getRandomNounSeed } from '../components/Utils/utils.js';
+import ImageData from '../data/image-data.json';
+import { buildSVG } from '../components/Utils/svg-builder.js';
+import { PNGCollectionEncoder } from '../components/Utils/png-collection-encoder.js'
+import Noun from '../components/Noun.js';
+import NounModal from '../components/NounModal.js';
 import classes from '../styles/Playground.module.css';
-import React, { ReactNode, useEffect, useState } from 'react';
-import { ImageData, getNounData, getRandomNounSeed } from '@nouns/assets';
-import { buildSVG, PNGCollectionEncoder } from '@nouns/sdk';
-import Noun from '../components/Noun';
-import NounModal from '../components/NounModal';
 
 const encoder = new PNGCollectionEncoder(ImageData.palette);
+console.log(ImageData.pallete);
 
-
-const parseTraitName = (partName: string): string =>
+const parseTraitName = partName =>
   capitalizeFirstLetter(partName.substring(partName.indexOf('-') + 1));
 
-const capitalizeFirstLetter = (s: string): string => s.charAt(0).toUpperCase() + s.slice(1);
+const capitalizeFirstLetter = s => s.charAt(0).toUpperCase() + s.slice(1);
 
-const traitKeyToLocalizedTraitKeyFirstLetterCapitalized = (s: string): ReactNode => {
+const traitKeyToLocalizedTraitKeyFirstLetterCapitalized = s => {
   const traitMap = new Map([
-    ['background', Background],
-    ['body', Body],
-    ['accessory', Accessory],
-    ['head', Head],
-    ['glasses', Glasses],
+    ['background', 'Background'],
+    ['body', 'Body'],
+    ['accessory', 'Accessory'],
+    ['head', 'Head'],
+    ['glasses', 'Glasses'],
   ]);
 
   return traitMap.get(s);
 };
 
-const Playground: React.FC = () => {
-  const [nounSvgs, setNounSvgs] = useState<string[]>();
-  const [traits, setTraits] = useState<Trait[]>();
-  const [modSeed, setModSeed] = useState<{ [key: string]: number }>();
-  const [initLoad, setInitLoad] = useState<boolean>(true);
-  const [displayNoun, setDisplayNoun] = useState<boolean>(false);
-  const [indexOfNounToDisplay, setIndexOfNounToDisplay] = useState<number>();
-  const [selectIndexes, setSelectIndexes] = useState<Record<string, number>>({});
+const Playground = () => {
+  const [nounSvgs, setNounSvgs] = useState([]);
+  const [traits, setTraits] = useState([]);
+  const [modSeed, setModSeed] = useState({});
+  const [initLoad, setInitLoad] = useState(true);
+  const [displayNoun, setDisplayNoun] = useState(false);
+  const [indexOfNounToDisplay, setIndexOfNounToDisplay] = useState();
+  const [selectIndexes, setSelectIndexes] = useState({});
 
   const generateNounSvg = React.useCallback(
-    (amount: number = 1) => {
+    (amount = 1) => {
       for (let i = 0; i < amount; i++) {
         const seed = { ...getRandomNounSeed(), ...modSeed };
         const { parts, background } = getNounData(seed);
@@ -54,7 +56,7 @@ const Playground: React.FC = () => {
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [pendingTrait, modSeed],
+    [modSeed],
   );
 
   useEffect(() => {
@@ -66,9 +68,9 @@ const Playground: React.FC = () => {
       }),
     ];
     setTraits(
-      traitTitles.map((value, index) => {
+      traitTitles.map((title, index) => {
         return {
-          title: value,
+          title: title,
           traitNames: traitNames[index],
         };
       }),
@@ -80,10 +82,10 @@ const Playground: React.FC = () => {
     }
   }, [generateNounSvg, initLoad]);
 
-  const traitOptions = (trait: Trait) => {
+  const traitOptions = trait => {
     return Array.from(Array(trait.traitNames.length + 1)).map((_, index) => {
       const traitName = trait.traitNames[index - 1];
-      const parsedTitle = index === 0 ? `Random` : parseTraitName(traitName);
+      const parsedTitle = index === 0 ? 'Random' : parseTraitName(traitName);
       return (
         <option key={index} value={traitName}>
           {parsedTitle}
@@ -92,7 +94,7 @@ const Playground: React.FC = () => {
     });
   };
 
-  const traitButtonHandler = (trait: Trait, traitIndex: number) => {
+  const traitButtonHandler = (trait, traitIndex) => {
     setModSeed(prev => {
       // -1 traitIndex = random
       if (traitIndex < 0) {
@@ -109,6 +111,7 @@ const Playground: React.FC = () => {
 
   return (
     <>
+     
       {displayNoun && indexOfNounToDisplay !== undefined && nounSvgs && (
         <NounModal
           onDismiss={() => {
@@ -117,36 +120,20 @@ const Playground: React.FC = () => {
           svg={nounSvgs[indexOfNounToDisplay]}
         />
       )}
-
-      <Container fluid="lg">
-        <Row>
-          <Col lg={10} className={classes.headerRow}>
-            <span>
-              Explore
-            </span>
-            <h1>
-              Playground
-            </h1>
-            <p>
-              
-                The playground was built using the nounsProtocolLink. Noun's traits are determined
-                by the Noun Seed. The seed was generated using nounsAssetsLink and rendered using
-                the nounsSDKLink.
+      
         
-            </p>
-          </Col>
-        </Row>
+      <Container fluid="lg" className="pt-8">
         <Row>
           <Col lg={3}>
             <Col lg={12}>
               <Button
-                onClick={() => {
-                  generateNounSvg();
-                }}
-                className={classes.primaryBtn}
+              onClick={() => {
+                generateNounSvg();
+              }}
+             className={classes.primaryBtn}
               >
-                Generate Nouns
-              </Button>
+              Generate Nouncillors
+            </Button>
             </Col>
             <Row>
               {traits &&
@@ -181,19 +168,16 @@ const Playground: React.FC = () => {
                   );
                 })}
             </Row>
-           
-            <p className={classes.nounYearsFooter}>
-                You've generated{' '}
-                {(parseInt(nounSvgs ? (nounSvgs.length / 365).toFixed(2) : '0'))} years
-                worth of Nouns
-            </p>
           </Col>
+
           <Col lg={9}>
             <Row>
               {nounSvgs &&
                 nounSvgs.map((svg, i) => {
                   return (
                     <Col xs={4} lg={3} key={i}>
+
+                      <div className="">
                       <div
                         onClick={() => {
                           setIndexOfNounToDisplay(i);
@@ -203,10 +187,11 @@ const Playground: React.FC = () => {
                         <Noun
                           imgPath={`data:image/svg+xml;base64,${btoa(svg)}`}
                           alt="noun"
-                          className={classes.nounImg}
-                          wrapperClassName={classes.nounWrapper}
+                          className="rounded-lg hover:cursor-pointer hover:scale-105 transition-transform"
                         />
                       </div>
+                      </div>
+
                     </Col>
                   );
                 })}
@@ -214,7 +199,8 @@ const Playground: React.FC = () => {
           </Col>
         </Row>
       </Container>
-    </>
+
+   </>
   );
 };
 export default Playground;
