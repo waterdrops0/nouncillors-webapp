@@ -135,7 +135,7 @@ return (
 
 
         {/* Left Half: Main Content Area for Displaying Generated Noun */}
-        <div className="w-2/3 overflow-hidden p-4 bg-gray-500 md:w-1/3">
+        <div className="w-2/3 overflow-hidden bg-gray-500 p-4 mt-12 md:mt-0 md:w-1/3">
           {nounSvg && (
             <div className="hover:cursor-pointer">
               <Noun imgPath={`data:image/svg+xml;base64,${btoa(nounSvg)}`} alt="noun" className="" />
