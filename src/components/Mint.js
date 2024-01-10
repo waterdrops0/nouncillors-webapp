@@ -53,16 +53,14 @@ const Mint = () => {
     }
   };
 
-  const generateNounSvg = React.useCallback(
-    () => {
+  const generateNounSvg =
+() => {
         const seed = { ...getRandomNounSeed(), ...lastSeed, ...modSeed };
         const { parts, background } = getNounData(seed);
         const svg = buildSVG(parts, encoder.data.palette, background);
         setNounSvg([svg]);
         setLastSeed(seed);
-    },
-    [modSeed],
-    );
+    }
 
   const displayHeads = (images) => {
     const newHead = [];
