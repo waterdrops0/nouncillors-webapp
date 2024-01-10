@@ -61,14 +61,14 @@ const Header = () => {
   return (
     <header className="flex w-full p-8 max-sm:p-6 justify-between">
       <div className="flex items-center gap-12">
-        <a href="/">
+        <div id="should be link">
           <img
             src="/logo.webp"
             alt="Nouncil Logo"
             className="w-16 h-16 select-none"
             draggable={false}
           />
-        </a>
+        </div>
         <div className="max-md:hidden">
           <Delegated />
         </div>
