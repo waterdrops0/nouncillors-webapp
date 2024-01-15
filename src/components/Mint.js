@@ -5,7 +5,6 @@ import { buildSVG } from './Utils/svg-builder.js';
 import { buildSVGForSinglePart } from './Utils/svg-builder2.js';
 import { PNGCollectionEncoder } from './Utils/png-collection-encoder.js'
 import Noun from './Noun.js';
-import NounModal from './NounModal.js';
 import ScrollContainer from './ScrollContainer.js'
 import SimpleContainer from './SimpleContainer.js'
 import { mint } from '../eth/mint.js';
