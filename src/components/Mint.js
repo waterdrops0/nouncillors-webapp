@@ -150,7 +150,7 @@ return (
                 <ScrollContainer>
                   {head.map((head) => (
                     <div key={head.id} className={`rounded-lg hover:cursor-pointer ${
-                selectedHead === head.id ? 'border-2 border-blue-500 bg-blue-200' : '' // Conditional styling
+                selectedHead === head.id ? 'border-1 border-blue-500 bg-blue-200' : '' // Conditional styling
               }`}
                       onClick={() => {
                 setModSeed(prev => ({ ...prev, head: head.id }));
@@ -167,7 +167,7 @@ return (
                 <ScrollContainer>
                   {glasses.map((glasses) => (
                     <div key={glasses.id} className={`rounded-lg hover:cursor-pointer ${
-                        selectedGlasses === glasses.id ? 'border-2 border-blue-500 bg-blue-200' : '' // Conditional styling
+                        selectedGlasses === glasses.id ? 'border-1 border-blue-500 bg-blue-200' : '' // Conditional styling
                       }`}
                               onClick={() => {
                         setModSeed(prev => ({ ...prev, glasses: glasses.id }));
