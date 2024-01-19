@@ -18,7 +18,6 @@ const Mint = () => {
   const { receiver, provider } = useContext(EthereumContext);  
   const [nounSvg, setNounSvg] = useState([]);
   const [modSeed, setModSeed] = useState({});
-  const [displayNoun, setDisplayNoun] = useState(false);
   const [lastSeed, setLastSeed] = useState({});
   const [head, setHead] = useState([]);
   const [glasses, setGlasses] = useState([]);
@@ -30,7 +29,6 @@ const Mint = () => {
     setLoading(true);
 
     
-    // Check if both selectedHead and selectedGlasses are set
     if (selectedHead === null || selectedGlasses === null) {
       toast('Please select a head and glasses before sending the transaction', { type: 'error' });
       setLoading(false);
@@ -108,28 +106,18 @@ const displayBackgrounds = (images) => {
 
 
     useEffect(() => {
-        // Display heads
+      
         displayHeads(ImageData.images);
 
-        // Display glasses
         displayGlasses(ImageData.images)
 
-        // Display backgrounds
         displayBackgrounds(ImageData.bgcolors)
 
-        // Call generateNounSvg whenever modSeed changes
         generateNounSvg();
         }, [generateNounSvg, modSeed]); 
 
 return (
   <>
-    {displayNoun && nounSvg && (
-      <NounModal
-        onDismiss={() => setDisplayNoun(false)}
-        svg={nounSvg} 
-      />
-    )}
-
       <div className="flex flex-col h-[90vh] gap-3 items-center justify-center md:flex-row">
 
 
