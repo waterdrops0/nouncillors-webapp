@@ -1,3 +1,7 @@
+import {
+  FloatingLabel,
+  Form,
+} from 'react-bootstrap';
 import React, { useEffect, useState, useContext } from 'react';
 import { getNounData, getRandomNounSeed } from './Utils/utils.js';
 import ImageData from '../data/image-data.json';
@@ -13,6 +17,21 @@ import { toast } from 'react-toastify';
 
 const encoder = new PNGCollectionEncoder(ImageData.palette);
 
+const parseTraitName = partName =>
+  capitalizeFirstLetter(partName.substring(partName.indexOf('-') + 1));
+
+const capitalizeFirstLetter = s => s.charAt(0).toUpperCase() + s.slice(1);
+
+const traitKeyToLocalizedTraitKeyFirstLetterCapitalized = s => {
+  const traitMap = new Map([
+    ['background', 'Background'],
+    ['head', 'Head'],
+    ['glasses', 'Glasses'],
+  ]);
+
+  return traitMap.get(s);
+};
+
 const Mint = () => {
   const [loading, setLoading] = useState(false);
   const { receiver, provider } = useContext(EthereumContext);  
@@ -24,6 +43,8 @@ const Mint = () => {
   const [background, setBackground] = useState([]);
   const [selectedHead, setSelectedHead] = useState(null);
   const [selectedGlasses, setSelectedGlasses] = useState(null);
+  const [traits, setTraits] = useState([]);
+  const [selectIndexes, setSelectIndexes] = useState({});
 
     const sendTx = async () => {
     setLoading(true);
@@ -60,6 +81,33 @@ const Mint = () => {
     },
     [modSeed],
     );
+
+  const traitOptions = trait => {
+    return Array.from(Array(trait.traitNames.length + 1)).map((_, index) => {
+      const traitName = trait.traitNames[index - 1];
+      const parsedTitle = index === 0 ? 'Random' : parseTraitName(traitName);
+      return (
+        <option key={index} value={traitName}>
+          {parsedTitle}
+        </option>
+      );
+    });
+  };  
+
+  const traitButtonHandler = (trait, traitIndex) => {
+    setModSeed(prev => {
+      // -1 traitIndex = random
+      if (traitIndex < 0) {
+        let state = { ...prev };
+        delete state[trait.title];
+        return state;
+      }
+      return {
+        ...prev,
+        [trait.title]: traitIndex,
+      };
+    });
+  };
 
   const displayHeads = (images) => {
     const newHead = [];
@@ -106,6 +154,22 @@ const displayBackgrounds = (images) => {
 
 
     useEffect(() => {
+
+        const traitTitles = ['background', 'head', 'glasses'];
+        const traitNames = [
+          ['cool', 'warm'],
+          ...Object.values(ImageData.images).map(i => {
+            return i.map(imageData => imageData.filename);
+          }),
+        ];
+        setTraits(
+          traitTitles.map((title, index) => {
+            return {
+              title: title,
+              traitNames: traitNames[index],
+            };
+          }),
+        );
       
         displayHeads(ImageData.images);
 
@@ -176,6 +240,38 @@ return (
                   ))}
                 </SimpleContainer>
               </div>
+
+               {traits &&
+                traits.map((trait, index) => {
+                  return (
+                      <Form className="h-16">
+                        <FloatingLabel
+                          controlId="floatingSelect"
+                          label={traitKeyToLocalizedTraitKeyFirstLetterCapitalized(trait.title)}
+                          key={index}
+                          className="text-sm text-gray-500"
+                        >
+                          <Form.Select
+                            aria-label="Floating label select example"
+                            className="h-full w-full my-2 rounded-xl bg-white border border-gray-300 text-lg font-bold text-gray-700 hover:border-gray-300 hover:bg-gray-100 focus:border-gray-300 focus:bg-gray-100 focus:outline-none focus:ring-0"
+                            value={trait.traitNames[selectIndexes?.[trait.title]] ?? -1}
+                            onChange={e => {
+                              let index = e.currentTarget.selectedIndex;
+                              traitButtonHandler(trait, index - 1); // - 1 to account for 'random'
+                              setSelectIndexes({
+                                ...selectIndexes,
+                                [trait.title]: index - 1,
+                              });
+                            }}
+                          >
+                            {traitOptions(trait)}
+                          </Form.Select>
+                        </FloatingLabel>
+                      </Form>
+                  );
+                })}
+
+              
 
           <div className="">
         
