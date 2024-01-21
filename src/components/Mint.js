@@ -3,6 +3,7 @@ import { getNounData, getRandomNounSeed } from './Utils/utils.js';
 import ImageData from '../data/image-data.json';
 import { buildSVG } from './Utils/svg-builder.js';
 import { buildSVGForSinglePart } from './Utils/svg-builder2.js';
+import { svg2png } from './Utils/svg2png';
 import { PNGCollectionEncoder } from './Utils/png-collection-encoder.js'
 import Noun from './Noun.js';
 import ScrollContainer from './ScrollContainer.js'
@@ -37,6 +38,7 @@ const Mint = () => {
   // State hooks for managing various component states.
   const [loading, setLoading] = useState(false);
   const { receiver, provider } = useContext(EthereumContext);  
+  const [nounPng, setNounPng] = useState(null);
   const [nounSvg, setNounSvg] = useState([]);
   const [modSeed, setModSeed] = useState({});
   const [lastSeed, setLastSeed] = useState({});
@@ -75,16 +77,30 @@ const Mint = () => {
     }
   };
 
+  // Function to download the noun image as a PNG file.
+  const downloadNounPNG = () => {
+    if (nounPng) {
+      const downloadEl = document.createElement('a');
+      downloadEl.href = nounPng;
+      downloadEl.download = 'noun.png';
+      downloadEl.click();
+    }
+  };
+
   // Function to generate an SVG image for the NFT.
   const generateNounSvg = React.useCallback(
-    () => {
-        const seed = { ...getRandomNounSeed(), ...lastSeed, ...modSeed };
-        const { parts, background } = getNounData(seed);
-        const svg = buildSVG(parts, encoder.data.palette, background);
-        setNounSvg([svg]);
-        setLastSeed(seed);
+    async () => {
+      const seed = { ...getRandomNounSeed(), ...lastSeed, ...modSeed };
+      const { parts, background } = getNounData(seed);
+      const svg = buildSVG(parts, encoder.data.palette, background);
+      setNounSvg([svg]);
+      setLastSeed(seed);
+
+      // Convert SVG to PNG and update the nounPng state
+      const png = await svg2png(svg, 512, 512);
+      setNounPng(png);
     },
-    [modSeed],
+    [modSeed, lastSeed],
   );
 
   // Function to create trait options for the dropdown.
@@ -195,9 +211,20 @@ return (
         {/* Left Half: Main Content Area for Displaying Generated Noun */}
         <div className="w-2/3 overflow-hidden bg-gray-500 p-4 mt-12 md:mt-0 md:w-1/3">
           {nounSvg && (
-            <div className="hover:cursor-pointer">
+            <div className="">
               <Noun imgPath={`data:image/svg+xml;base64,${btoa(nounSvg)}`} alt="noun" className="" />
             </div>
+          )}
+
+        {/* Download Button */}
+          {nounPng && (
+            <button 
+                onClick={downloadNounPNG} 
+                className="cursor-pointer bg-transparent text-xs text-gray-800 font-semibold mt-2 py-2 w-1/2 border border-gray-400 rounded shadow"
+            >
+                Download PNG
+            </button>
+
           )}
         </div>
 
