@@ -154,12 +154,11 @@ const displayBackgrounds = (images) => {
 
 
     useEffect(() => {
-
         const traitTitles = ['background', 'head', 'glasses'];
         const traitNames = [
           ['cool', 'warm'],
-          ...Object.values(ImageData.images).map(i => {
-            return i.map(imageData => imageData.filename);
+          ...['heads', 'glasses'].map(category => {
+            return ImageData.images[category].map(imageData => imageData.filename);
           }),
         ];
         setTraits(
