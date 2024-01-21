@@ -1,7 +1,3 @@
-import {
-  FloatingLabel,
-  Form,
-} from 'react-bootstrap';
 import React, { useEffect, useState, useContext } from 'react';
 import { getNounData, getRandomNounSeed } from './Utils/utils.js';
 import ImageData from '../data/image-data.json';
