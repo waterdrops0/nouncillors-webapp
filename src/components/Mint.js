@@ -11,13 +11,17 @@ import { mint } from '../eth/mint.js';
 import { EthereumContext } from "../eth/context.js";
 import { toast } from 'react-toastify';
 
+// Defines a new PNGCollectionEncoder instance for handling image data.
 const encoder = new PNGCollectionEncoder(ImageData.palette);
 
+// Function to parse and capitalize the first letter of a trait name.
 const parseTraitName = partName =>
   capitalizeFirstLetter(partName.substring(partName.indexOf('-') + 1));
 
+// Utility function to capitalize the first letter of a string.
 const capitalizeFirstLetter = s => s.charAt(0).toUpperCase() + s.slice(1);
 
+// Maps a trait key to a localized version with the first letter capitalized.
 const traitKeyToLocalizedTraitKeyFirstLetterCapitalized = s => {
   const traitMap = new Map([
     ['background', 'Background'],
@@ -28,7 +32,9 @@ const traitKeyToLocalizedTraitKeyFirstLetterCapitalized = s => {
   return traitMap.get(s);
 };
 
+// React component for minting NFTs.
 const Mint = () => {
+  // State hooks for managing various component states.
   const [loading, setLoading] = useState(false);
   const { receiver, provider } = useContext(EthereumContext);  
   const [nounSvg, setNounSvg] = useState([]);
@@ -42,16 +48,18 @@ const Mint = () => {
   const [traits, setTraits] = useState([]);
   const [selectIndexes, setSelectIndexes] = useState({});
 
-    const sendTx = async () => {
+  // Function to handle the transaction sending process.
+  const sendTx = async () => {
     setLoading(true);
 
-    
+    // Validates that both head and glasses are selected before proceeding.
     if (selectedHead === null || selectedGlasses === null) {
       toast('Please select a head and glasses before sending the transaction', { type: 'error' });
       setLoading(false);
       return; 
     }
     
+    // Attempts to mint the NFT and handles the response or errors.
     try {
       const seed = { ...getRandomNounSeed(), ...modSeed}
       const response = await mint(receiver, provider, seed);
@@ -67,6 +75,7 @@ const Mint = () => {
     }
   };
 
+  // Function to generate an SVG image for the NFT.
   const generateNounSvg = React.useCallback(
     () => {
         const seed = { ...getRandomNounSeed(), ...lastSeed, ...modSeed };
@@ -76,8 +85,9 @@ const Mint = () => {
         setLastSeed(seed);
     },
     [modSeed],
-    );
+  );
 
+  // Function to create trait options for the dropdown.
   const traitOptions = trait => {
     return Array.from(Array(trait.traitNames.length + 1)).map((_, index) => {
       const traitName = trait.traitNames[index - 1];
@@ -90,9 +100,9 @@ const Mint = () => {
     });
   };  
 
+  // Handles the selection of traits and updates the modSeed state.
   const traitButtonHandler = (trait, traitIndex) => {
     setModSeed(prev => {
-      // -1 traitIndex = random
       if (traitIndex < 0) {
         let state = { ...prev };
         delete state[trait.title];
@@ -105,6 +115,7 @@ const Mint = () => {
     });
   };
 
+  // Functions to display heads, glasses, and backgrounds. They update their respective states.
   const displayHeads = (images) => {
     const newHead = [];
     
@@ -148,7 +159,7 @@ const displayBackgrounds = (images) => {
   setBackground(newBackground);
 };
 
-
+// useEffect hook to initialize trait data and images on component mount.
     useEffect(() => {
         const traitTitles = ['background', 'head', 'glasses'];
         const traitNames = [
@@ -175,6 +186,7 @@ const displayBackgrounds = (images) => {
         generateNounSvg();
         }, [generateNounSvg, modSeed]); 
 
+// JSX rendering the component UI.        
 return (
   <>
       <div className="flex flex-col h-[90vh] gap-3 items-center justify-center md:flex-row">
