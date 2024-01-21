@@ -240,35 +240,30 @@ return (
                 </SimpleContainer>
               </div>
 
-               {traits &&
-                traits.map((trait, index) => {
-                  return (
-                      <Form className="h-16">
-                        <FloatingLabel
-                          controlId="floatingSelect"
-                          label={traitKeyToLocalizedTraitKeyFirstLetterCapitalized(trait.title)}
-                          key={index}
-                          className="text-sm text-gray-500"
-                        >
-                          <Form.Select
-                            aria-label="Floating label select example"
-                            className="h-full w-full my-2 rounded-xl bg-white border border-gray-300 text-lg font-bold text-gray-700 hover:border-gray-300 hover:bg-gray-100 focus:border-gray-300 focus:bg-gray-100 focus:outline-none focus:ring-0"
-                            value={trait.traitNames[selectIndexes?.[trait.title]] ?? -1}
-                            onChange={e => {
-                              let index = e.currentTarget.selectedIndex;
-                              traitButtonHandler(trait, index - 1); // - 1 to account for 'random'
-                              setSelectIndexes({
-                                ...selectIndexes,
-                                [trait.title]: index - 1,
-                              });
-                            }}
-                          >
-                            {traitOptions(trait)}
-                          </Form.Select>
-                        </FloatingLabel>
-                      </Form>
-                  );
-                })}
+               {
+                  traits && traits.map((trait, index) => (
+                    <div key={index} className="col-span-12 sm:col-span-6 lg:col-span-4 px-4 py-2">
+                      <label htmlFor={`floatingSelect-${index}`} className="block text-sm font-medium text-gray-700">
+                        {traitKeyToLocalizedTraitKeyFirstLetterCapitalized(trait.title)}
+                      </label>
+                      <select
+                        id={`floatingSelect-${index}`}
+                        className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                        value={trait.traitNames[selectIndexes?.[trait.title]] ?? -1}
+                        onChange={(e) => {
+                          const selectedIndex = e.currentTarget.selectedIndex;
+                          traitButtonHandler(trait, selectedIndex - 1); // -1 to account for 'random'
+                          setSelectIndexes({
+                            ...selectIndexes,
+                            [trait.title]: selectedIndex - 1,
+                          });
+                        }}
+                      >
+                        {traitOptions(trait)}
+                      </select>
+                    </div>
+                  ))
+                }
 
               
 
