@@ -209,7 +209,7 @@ return (
 
 
         {/* Left Half: Main Content Area for Displaying Generated Noun */}
-        <div className="w-2/3 overflow-hidden bg-gray-500 p-4 mt-12 md:mt-0 md:w-1/3">
+        <div className="w-2/3 overflow-hidden bg-gray-500 p-4 mt-12 md:mt-0 md:w-1/3 border border-gray-400 rounded shadow">
           {nounSvg && (
             <div className="">
               <Noun imgPath={`data:image/svg+xml;base64,${btoa(nounSvg)}`} alt="noun" className="" />
@@ -220,16 +220,16 @@ return (
           {nounPng && (
             <button 
                 onClick={downloadNounPNG} 
-                className="cursor-pointer bg-transparent text-xs text-gray-800 font-semibold mt-2 py-2 w-1/2 border border-gray-400 rounded shadow"
+                className="cursor-pointer bg-transparent hover:bg-gray-300 text-xs text-gray-800 font-semibold mt-2 py-2 w-1/3 border border-gray-400 rounded shadow"
             >
-                Download PNG
+                Download
             </button>
 
           )}
         </div>
 
         {/* Right Half: Sidebar for Traits */}
-        <div className="flex flex-col w-2/3 overflow-auto p-4 bg-gray-400 md:w-1/3 gap-2">
+        <div className="flex flex-col w-2/3 overflow-auto p-4 bg-gray-400 md:w-1/3 gap-2 border border-gray-400 rounded shadow">
       
           {/* Heads Traits Section */}
               <div className="bg-gray-300 p-2">
@@ -304,7 +304,7 @@ return (
 
           <div className="">
         
-          <button className="cursor-pointer bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 w-full border border-gray-400 rounded shadow" onClick={sendTx} type="mint" disabled={loading}>{loading ? 'Minting...' : 'Mint'}</button>
+          <button className="cursor-pointer bg-red hover:bg-maroon text-gray-800 font-semibold py-2 px-4 w-full border border-gray-400 rounded shadow" onClick={sendTx} type="mint" disabled={loading}>{loading ? 'Minting...' : 'Mint'}</button>
         
           </div>
         </div>

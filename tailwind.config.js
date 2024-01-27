@@ -12,7 +12,7 @@ module.exports = {
         white: "white",
         beige: "#FAFAE3",
         black: "#322C23",
-        red: "#E20010",
+        red: "#e50000",
         maroon: "#C3000E",
         'lumber': {
           100: '#6B3F39',
@@ -27,6 +27,13 @@ module.exports = {
           300: '#D7D3CD',
           400: '#CFC2AB',
           500: '#CBC1BC'
+        },
+        'credit': {
+          100: '#1E3445',
+          200: '#EAB118',
+          300: '#FFFFFF',
+          400: '#00499C',
+          500: '#0079FC'
         },
       },
       fontFamily: {
