@@ -131,49 +131,67 @@ const Mint = () => {
     });
   };
 
-  // Functions to display heads, glasses, and backgrounds. They update their respective states.
+  // Function to process and display head traits from image data.
   const displayHeads = (images) => {
     const newHead = [];
-    
+
+    // Iterate over each category of traits in images.
     Object.keys(images).forEach((key) => {
+      // Process each trait in the category.
       images[key].forEach((trait, i) => {
+        // Filter and process traits starting with 'head'.
         if (trait.filename.startsWith('head')) {
+          // Build SVG data for the trait.
           const svgData = buildSVGForSinglePart(trait.data, encoder.data.palette);
+          // Store the processed SVG data with an identifier.
           newHead.push({ id: i, svgData });
         }
       });
     });
 
+    // Update the state or display with the processed head data.
     setHead(newHead);
   };
 
+  // Function to process and display glasses traits from image data.
   const displayGlasses = (images) => {
     const newGlasses = [];
-    
+
+    // Iterate over each category of traits in images.
     Object.keys(images).forEach((key) => {
+      // Process each trait in the category.
       images[key].forEach((trait, i) => {
+        // Filter and process traits starting with 'glasses'.
         if (trait.filename.startsWith('glasses')) {
+          // Build SVG data for the trait.
           const svgData = buildSVGForSinglePart(trait.data, encoder.data.palette);
+          // Store the processed SVG data with an identifier.
           newGlasses.push({ id: i, svgData });
         }
       });
     });
 
+    // Update the state or display with the processed glasses data.
     setGlasses(newGlasses);
   };
 
-const displayBackgrounds = (images) => {
-  const newBackground = [];
+  // Function to process and display background colors from image data.
+  const displayBackgrounds = (images) => {
+    const newBackground = [];
 
-  images.forEach((background, i) => {
-    const svgData = `<svg width="75" height="75" xmlns="http://www.w3.org/2000/svg">
-                       <rect width="100%" height="100%" fill="#${background}" />
-                     </svg>`;
-    newBackground.push({ id: i, svgData });
-  });
+    // Process each background color.
+    images.forEach((background, i) => {
+      // Create SVG data for each background.
+      const svgData = `<svg width="75" height="75" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="100%" height="100%" fill="#${background}" />
+                      </svg>`;
+      // Store the processed SVG data with an identifier.
+      newBackground.push({ id: i, svgData });
+    });
 
-  setBackground(newBackground);
-};
+    // Update the state or display with the processed background data.
+    setBackground(newBackground);
+  };
 
 // useEffect hook to initialize trait data and images on component mount.
     useEffect(() => {
@@ -275,19 +293,25 @@ return (
                 </SimpleContainer>
               </div>
 
+
+               {/* Drop-down Trait Selection Section */}
                {
                   traits && traits.map((trait, index) => (
                     <div key={index} className="col-span-12 sm:col-span-6 lg:col-span-4 px-4 py-2">
+                      {/*Label for each trait dropdown*/}
                       <label htmlFor={`floatingSelect-${index}`} className="block text-sm font-medium text-gray-700">
                         {traitKeyToLocalizedTraitKeyFirstLetterCapitalized(trait.title)}
                       </label>
+                      {/*Dropdown select for traits*/}
                       <select
                         id={`floatingSelect-${index}`}
                         className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                         value={trait.traitNames[selectIndexes?.[trait.title]] ?? -1}
                         onChange={(e) => {
                           const selectedIndex = e.currentTarget.selectedIndex;
-                          traitButtonHandler(trait, selectedIndex - 1); // -1 to account for 'random'
+                          // Handling trait selection change
+                          traitButtonHandler(trait, selectedIndex - 1); // Adjust for 'random' option
+                          // Updating state for selected index
                           setSelectIndexes({
                             ...selectIndexes,
                             [trait.title]: selectedIndex - 1,
@@ -301,10 +325,17 @@ return (
                 }
 
               
-
+          {/*Mint Button section*/}        
           <div className="">
-        
-          <button className="cursor-pointer bg-red hover:bg-maroon text-gray-800 font-semibold hover:font-bold font-mono py-2 px-4 w-full border border-gray-400 rounded shadow-xl" onClick={sendTx} type="mint" disabled={loading}>{loading ? 'Minting...' : 'Mint'}</button>
+
+            <button 
+              className="cursor-pointer bg-red hover:bg-maroon text-gray-800 font-semibold hover:font-bold font-mono py-2 px-4 w-full border border-gray-400 rounded shadow-xl" 
+              onClick={sendTx} 
+              type="mint" 
+              disabled={loading}
+            >
+              {loading ? 'Minting...' : 'Mint'}
+            </button>
         
           </div>
         </div>
@@ -312,4 +343,5 @@ return (
   </>
 );
         }
+
 export default Mint;
