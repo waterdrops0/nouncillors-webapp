@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@web3modal/ethers": "^3.5.7",
     "eth-sig-util": "^3.0.1",
     "ethers": "^6.9.0",
     "fs": "^0.0.1-security",
