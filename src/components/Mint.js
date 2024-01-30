@@ -234,10 +234,10 @@ return (
 
 
         {/* Left Half: Main Content Area for Displaying Generated Noun */}
-        <div className="w-2/3 overflow-hidden bg-gray-500 p-4 mt-12 md:mt-0 md:w-1/3 border border-gray-400 rounded shadow">
+        <div className="w-2/3 overflow-hidden bg-gray-500 p-4 mt-12 md:mt-0 md:w-1/3 border border-gray-400 shadow">
           {nounSvg && (
             <div className="">
-              <Noun imgPath={`data:image/svg+xml;base64,${btoa(nounSvg)}`} alt="noun" className="shadow-md" />
+              <Noun imgPath={`data:image/svg+xml;base64,${btoa(nounSvg)}`} alt="noun" className="" />
             </div>
           )}
 
@@ -254,54 +254,7 @@ return (
         </div>
 
         {/* Right Half: Sidebar for Traits */}
-        <div className="flex flex-col w-2/3 overflow-auto p-4 bg-gray-400 md:w-1/3 gap-2 border border-gray-400 rounded shadow">
-      
-          {/* Heads Traits Section */}
-              <div className="bg-gray-300 p-2 shadow-md">
-                <ScrollContainer>
-                  {head.map((head) => (
-                    <div key={head.id} className={`rounded-lg hover:cursor-pointer ${
-                selectedHead === head.id ? 'border-1 border-blue-500 bg-blue-200' : '' // Conditional styling
-              }`}
-                      onClick={() => {
-                setModSeed(prev => ({ ...prev, head: head.id }));
-                setSelectedHead(head.id); // Update the selected head state
-              }}
-              dangerouslySetInnerHTML={{ __html: head.svgData }}
-            />
-          ))}
-                </ScrollContainer>
-              </div>
-
-              {/* Glasses Traits Section */}
-              <div className="bg-gray-300 p-2 shadow-md">
-                <ScrollContainer>
-                  {glasses.map((glasses) => (
-                    <div key={glasses.id} className={`rounded-lg hover:cursor-pointer ${
-                        selectedGlasses === glasses.id ? 'border-1 border-blue-500 bg-blue-200' : '' // Conditional styling
-                      }`}
-                              onClick={() => {
-                        setModSeed(prev => ({ ...prev, glasses: glasses.id }));
-                        setSelectedGlasses(glasses.id); // Update the selected head state
-                      }}
-                      dangerouslySetInnerHTML={{ __html: glasses.svgData }}
-                    />
-                  ))}
-                </ScrollContainer>
-              </div>
-
-              {/* Backgrounds Section */}
-              <div className="bg-gray-300 p-2 shadow-md">
-                <SimpleContainer>
-                  {background.map((background) => (
-                    <div key={background.id} className="rounded-lg hover:cursor-pointer hover:scale-105 transition-transform border border-2"
-                        onClick={() => setModSeed(prev => ({ ...prev, background: background.id }))} dangerouslySetInnerHTML={{ __html: background.svgData }} />
-                  ))}
-                </SimpleContainer>
-              </div>
-
-
-               {/* Drop-down Trait Selection Section */}
+        <div className="flex flex-col w-2/3 overflow-auto p-4 bg-gray-400 md:w-1/3 gap-2 border border-gray-400 shadow-xl">
                {
                   traits && traits.map((trait, index) => (
                     <div key={index} className="col-span-12 sm:col-span-6 lg:col-span-4 px-4 py-2">
