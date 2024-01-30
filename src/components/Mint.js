@@ -2,16 +2,12 @@ import React, { useEffect, useState, useContext } from 'react';
 import { getNounData, getRandomNounSeed } from './Utils/utils.js';
 import ImageData from '../data/image-data.json';
 import { buildSVG } from './Utils/svg-builder.js';
-import { buildSVGForSinglePart } from './Utils/svg-builder2.js';
 import { svg2png } from './Utils/svg2png';
 import { PNGCollectionEncoder } from './Utils/png-collection-encoder.js'
-import Noun from './Noun.js';
-import ScrollContainer from './ScrollContainer.js'
-import SimpleContainer from './SimpleContainer.js'
+import Nouncillor from './Nouncillor.js';
 import { mint } from '../eth/mint.js';
 import { EthereumContext } from "../eth/context.js";
 import { toast } from 'react-toastify';
-import Web3ModalButton from './Web3ModalButton';
 
 // Defines a new PNGCollectionEncoder instance for handling image data.
 const encoder = new PNGCollectionEncoder(ImageData.palette);
@@ -151,7 +147,7 @@ return (
         <div className="w-2/3 overflow-hidden bg-gray-500 p-4 mt-12 md:mt-0 md:w-1/3 border border-gray-400 shadow">
           {nounSvg && (
             <div className="">
-              <Noun imgPath={`data:image/svg+xml;base64,${btoa(nounSvg)}`} alt="noun" className="" />
+              <Nouncillor imgPath={`data:image/svg+xml;base64,${btoa(nounSvg)}`} alt="noun" className="" />
             </div>
           )}
 

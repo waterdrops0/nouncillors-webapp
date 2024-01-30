@@ -18,7 +18,7 @@ export const LoadingNoun = () => {
 
 // Component: Noun
 // - Displays an image, either a provided one or the loading image by default.
-const Noun = (props) => {
+const Nouncillor = (props) => {
   const { imgPath, alt, className } = props;
   return (
     <div className={""}>
@@ -31,4 +31,4 @@ const Noun = (props) => {
   );
 };
 
-export default Noun;
+export default Nouncillor;
