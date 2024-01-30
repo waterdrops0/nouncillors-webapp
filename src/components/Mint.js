@@ -11,6 +11,7 @@ import SimpleContainer from './SimpleContainer.js'
 import { mint } from '../eth/mint.js';
 import { EthereumContext } from "../eth/context.js";
 import { toast } from 'react-toastify';
+import Web3ModalButton from './Web3ModalButton';
 
 // Defines a new PNGCollectionEncoder instance for handling image data.
 const encoder = new PNGCollectionEncoder(ImageData.palette);
@@ -223,6 +224,12 @@ const Mint = () => {
 // JSX rendering the component UI.        
 return (
   <>
+
+            <div className="">
+                <Web3ModalButton className="" />
+            </div>
+
+    
       <div className="flex flex-col h-[90vh] gap-3 items-center justify-center md:flex-row">
 
 

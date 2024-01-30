@@ -1,6 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-}
 
-module.exports = nextConfig
+  webpack: (config) => {
+    // Add the specified modules to the externals array
+    config.externals.push('pino-pretty', 'lokijs', 'encoding');
+
+    // Return the modified config
+    return config;
+  },
+};
+
+module.exports = nextConfig;
