@@ -67,7 +67,7 @@ const Mint = () => {
     if (nounPng) {
       const downloadEl = document.createElement('a');
       downloadEl.href = nounPng;
-      downloadEl.download = 'noun.png';
+      downloadEl.download = 'nouncillor.png';
       downloadEl.click();
     }
   };
