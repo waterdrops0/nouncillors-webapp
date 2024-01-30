@@ -43,24 +43,12 @@ const Mint = () => {
   const [nounSvg, setNounSvg] = useState([]);
   const [modSeed, setModSeed] = useState({});
   const [lastSeed, setLastSeed] = useState({});
-  const [head, setHead] = useState([]);
-  const [glasses, setGlasses] = useState([]);
-  const [background, setBackground] = useState([]);
-  const [selectedHead, setSelectedHead] = useState(null);
-  const [selectedGlasses, setSelectedGlasses] = useState(null);
   const [traits, setTraits] = useState([]);
   const [selectIndexes, setSelectIndexes] = useState({});
 
   // Function to handle the transaction sending process.
   const sendTx = async () => {
     setLoading(true);
-
-    // Validates that both head and glasses are selected before proceeding.
-    if (selectedHead === null || selectedGlasses === null) {
-      toast('Please select a head and glasses before sending the transaction', { type: 'error' });
-      setLoading(false);
-      return; 
-    }
     
     // Attempts to mint the NFT and handles the response or errors.
     try {
@@ -132,68 +120,6 @@ const Mint = () => {
     });
   };
 
-  // Function to process and display head traits from image data.
-  const displayHeads = (images) => {
-    const newHead = [];
-
-    // Iterate over each category of traits in images.
-    Object.keys(images).forEach((key) => {
-      // Process each trait in the category.
-      images[key].forEach((trait, i) => {
-        // Filter and process traits starting with 'head'.
-        if (trait.filename.startsWith('head')) {
-          // Build SVG data for the trait.
-          const svgData = buildSVGForSinglePart(trait.data, encoder.data.palette);
-          // Store the processed SVG data with an identifier.
-          newHead.push({ id: i, svgData });
-        }
-      });
-    });
-
-    // Update the state or display with the processed head data.
-    setHead(newHead);
-  };
-
-  // Function to process and display glasses traits from image data.
-  const displayGlasses = (images) => {
-    const newGlasses = [];
-
-    // Iterate over each category of traits in images.
-    Object.keys(images).forEach((key) => {
-      // Process each trait in the category.
-      images[key].forEach((trait, i) => {
-        // Filter and process traits starting with 'glasses'.
-        if (trait.filename.startsWith('glasses')) {
-          // Build SVG data for the trait.
-          const svgData = buildSVGForSinglePart(trait.data, encoder.data.palette);
-          // Store the processed SVG data with an identifier.
-          newGlasses.push({ id: i, svgData });
-        }
-      });
-    });
-
-    // Update the state or display with the processed glasses data.
-    setGlasses(newGlasses);
-  };
-
-  // Function to process and display background colors from image data.
-  const displayBackgrounds = (images) => {
-    const newBackground = [];
-
-    // Process each background color.
-    images.forEach((background, i) => {
-      // Create SVG data for each background.
-      const svgData = `<svg width="75" height="75" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="100%" height="100%" fill="#${background}" />
-                      </svg>`;
-      // Store the processed SVG data with an identifier.
-      newBackground.push({ id: i, svgData });
-    });
-
-    // Update the state or display with the processed background data.
-    setBackground(newBackground);
-  };
-
 // useEffect hook to initialize trait data and images on component mount.
     useEffect(() => {
         const traitTitles = ['background', 'head', 'glasses'];
@@ -211,12 +137,6 @@ const Mint = () => {
             };
           }),
         );
-      
-        displayHeads(ImageData.images);
-
-        displayGlasses(ImageData.images)
-
-        displayBackgrounds(ImageData.bgcolors)
 
         generateNounSvg();
         }, [generateNounSvg, modSeed]); 
@@ -224,12 +144,6 @@ const Mint = () => {
 // JSX rendering the component UI.        
 return (
   <>
-
-            <div className="">
-                <Web3ModalButton className="" />
-            </div>
-
-    
       <div className="flex flex-col h-[90vh] gap-3 items-center justify-center md:flex-row">
 
 
@@ -254,7 +168,7 @@ return (
         </div>
 
         {/* Right Half: Sidebar for Traits */}
-        <div className="flex flex-col w-2/3 overflow-auto p-4 bg-gray-400 md:w-1/3 gap-2 border border-gray-400 shadow-xl">
+        <div className="flex flex-col w-2/3 overflow-auto p-4 bg-gray-400 md:w-1/3 gap-2 border border-gray-400">
                {
                   traits && traits.map((trait, index) => (
                     <div key={index} className="col-span-12 sm:col-span-6 lg:col-span-4 px-4 py-2">
