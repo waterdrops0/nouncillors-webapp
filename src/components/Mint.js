@@ -159,7 +159,7 @@ return (
           {nounPng && (
             <button 
                 onClick={downloadNounPNG} 
-                className="cursor-pointer bg-transparent hover:bg-gray-300 text-xs text-gray-800 font-semibold mt-2 py-2 w-1/3 border border-gray-400 rounded shadow-md"
+                className="cursor-pointer bg-transparent text-xs text-gray-800 font-semibold mt-2 py-2 w-1/3 border border-gray-400 rounded shadow-md"
             >
                 Download
             </button>
@@ -203,7 +203,7 @@ return (
           <div className="">
 
             <button 
-              className="cursor-pointer bg-red hover:bg-maroon text-gray-800 font-semibold hover:font-bold font-mono py-2 px-4 w-full border border-gray-400 rounded shadow-xl" 
+              className="cursor-pointer bg-prototype-400 hover:bg-prototype-500 text-gray-800 font-semibold hover:font-bold font-mono py-2 px-4 w-full border border-gray-400 rounded shadow-xl" 
               onClick={sendTx} 
               type="mint" 
               disabled={loading}

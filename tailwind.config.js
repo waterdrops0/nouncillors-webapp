@@ -35,6 +35,13 @@ module.exports = {
           400: '#00499C',
           500: '#0079FC'
         },
+        'prototype': {
+          100: '#c1edee',
+          200: '#e1e1e1',
+          300: '#cecece',
+          400: '#748ca7',
+          500: '#687e96'
+        },
       },
       fontFamily: {
         "crimson-pro": ["CrimsonPro"], 
