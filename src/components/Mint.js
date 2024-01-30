@@ -147,7 +147,7 @@ return (
         <div className="w-2/3 overflow-hidden bg-gray-500 p-4 mt-12 md:mt-0 md:w-1/3 border border-gray-400 shadow">
           {nounSvg && (
             <div className="">
-              <Nouncillor imgPath={`data:image/svg+xml;base64,${btoa(nounSvg)}`} alt="noun" className="" />
+              <Nouncillor imgPath={`data:image/svg+xml;base64,${btoa(nounSvg)}`} alt="nouncillor" className="" />
             </div>
           )}
 
