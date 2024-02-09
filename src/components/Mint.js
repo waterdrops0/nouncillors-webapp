@@ -199,7 +199,7 @@ return (
           <div className="">
 
             <button 
-              className="cursor-pointer bg-prototype-400 hover:bg-prototype-500 text-gray-800 font-semibold hover:font-bold font-mono py-2 px-4 w-full border border-gray-400 rounded shadow-xl" 
+              className="cursor-pointer bg-transparent hover:bg-red text-gray-800 font-semibold hover:font-bold font-mono py-2 px-4 w-full border border-red hover:border-transparent rounded shadow-xl" 
               onClick={sendTx} 
               type="mint" 
               disabled={loading}
