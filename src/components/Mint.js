@@ -62,16 +62,6 @@ const Mint = () => {
     }
   };
 
-  // Function to download the noun image as a PNG file.
-  const downloadNounPNG = () => {
-    if (nounPng) {
-      const downloadEl = document.createElement('a');
-      downloadEl.href = nounPng;
-      downloadEl.download = 'nouncillor.png';
-      downloadEl.click();
-    }
-  };
-
   // Function to generate an SVG image for the NFT.
   const generateNounSvg = React.useCallback(
     async () => {
