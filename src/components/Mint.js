@@ -178,7 +178,7 @@ return (
           <div className="">
 
             <button 
-              className="bg-gray-800 text-white font-bold py-2 px-4 w-full rounded hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50" 
+              className="bg-gray-200 text-black font-medium py-2 px-4 w-full rounded border border-gray-400 shadow hover:bg-gray-300 focus:bg-gray-400" 
               onClick={sendTx} 
               type="mint" 
               disabled={loading}
