@@ -150,17 +150,6 @@ return (
               <Nouncillor imgPath={`data:image/svg+xml;base64,${btoa(nounSvg)}`} alt="nouncillor" className="" />
             </div>
           )}
-
-        {/* Download Button */}
-          {nounPng && (
-            <button 
-                onClick={downloadNounPNG} 
-                className="cursor-pointer bg-transparent text-xs text-gray-800 font-semibold mt-2 py-2 w-1/3 border border-gray-400 rounded shadow-md"
-            >
-                Download
-            </button>
-
-          )}
         </div>
 
         {/* Right Half: Sidebar for Traits */}
@@ -199,7 +188,7 @@ return (
           <div className="">
 
             <button 
-              className="cursor-pointer bg-transparent text-gray-800 font-semibold hover:font-bold font-mono py-2 px-4 w-full border border-gray-300 rounded shadow-xl" 
+              className="bg-gray-800 text-white font-bold py-2 px-4 rounded hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-opacity-50"" 
               onClick={sendTx} 
               type="mint" 
               disabled={loading}
