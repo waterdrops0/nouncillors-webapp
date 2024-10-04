@@ -3,38 +3,35 @@ import { getNounData, getRandomNounSeed } from './Utils/utils.js';
 import ImageData from '../data/image-data.json';
 import { buildSVG } from './Utils/svg-builder.js';
 import { svg2png } from './Utils/svg2png';
-import { PNGCollectionEncoder } from './Utils/png-collection-encoder.js'
+import { PNGCollectionEncoder } from './Utils/png-collection-encoder.js';
 import Nouncillor from './Nouncillor.js';
 import { mint } from '../eth/mint.js';
-import { EthereumContext } from "../eth/context.js";
+import { EthereumContext } from '../eth/context.js';
 import { toast } from 'react-toastify';
 
-// Defines a new PNGCollectionEncoder instance for handling image data.
+// Initialize the PNGCollectionEncoder with the image palette.
 const encoder = new PNGCollectionEncoder(ImageData.palette);
 
-// Function to parse and capitalize the first letter of a trait name.
-const parseTraitName = partName =>
+// Utility functions for parsing and formatting trait names.
+const parseTraitName = (partName) =>
   capitalizeFirstLetter(partName.substring(partName.indexOf('-') + 1));
 
-// Utility function to capitalize the first letter of a string.
-const capitalizeFirstLetter = s => s.charAt(0).toUpperCase() + s.slice(1);
+const capitalizeFirstLetter = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
-// Maps a trait key to a localized version with the first letter capitalized.
-const traitKeyToLocalizedTraitKeyFirstLetterCapitalized = s => {
+const traitKeyToLocalizedTraitKeyFirstLetterCapitalized = (s) => {
   const traitMap = new Map([
     ['background', 'Background'],
     ['head', 'Head'],
     ['glasses', 'Glasses'],
   ]);
-
   return traitMap.get(s);
 };
 
-// React component for minting NFTs.
+// The Mint component.
 const Mint = () => {
-  // State hooks for managing various component states.
+  // State hooks.
   const [loading, setLoading] = useState(false);
-  const { receiver, provider } = useContext(EthereumContext);  
+  const { receiver, provider } = useContext(EthereumContext);
   const [nounPng, setNounPng] = useState(null);
   const [nounSvg, setNounSvg] = useState([]);
   const [modSeed, setModSeed] = useState({});
@@ -42,44 +39,39 @@ const Mint = () => {
   const [traits, setTraits] = useState([]);
   const [selectIndexes, setSelectIndexes] = useState({});
 
-  // Function to handle the transaction sending process.
+  // Function to handle the minting transaction.
   const sendTx = async () => {
     setLoading(true);
-    
-    // Attempts to mint the NFT and handles the response or errors.
     try {
-      const seed = { ...getRandomNounSeed(), ...modSeed}
+      const seed = { ...getRandomNounSeed(), ...modSeed };
       const response = await mint(receiver, provider, seed);
       const hash = response.hash;
       const onClick = hash
         ? () => window.open(`https://sepolia.etherscan.io/tx/${hash}`)
         : undefined;
       toast('Transaction sent!', { type: 'info', onClick });
-    } catch(err) {
+    } catch (err) {
       toast(err.message || err, { type: 'error' });
     } finally {
       setLoading(false);
     }
   };
 
-  // Function to generate an SVG image for the NFT.
-  const generateNounSvg = React.useCallback(
-    async () => {
-      const seed = { ...getRandomNounSeed(), ...lastSeed, ...modSeed };
-      const { parts, background } = getNounData(seed);
-      const svg = buildSVG(parts, encoder.data.palette, background);
-      setNounSvg([svg]);
-      setLastSeed(seed);
+  // Function to generate the noun SVG and PNG images.
+  const generateNounSvg = React.useCallback(async () => {
+    const seed = { ...getRandomNounSeed(), ...lastSeed, ...modSeed };
+    const { parts, background } = getNounData(seed);
+    const svg = buildSVG(parts, encoder.data.palette, background);
+    setNounSvg([svg]);
+    setLastSeed(seed);
 
-      // Convert SVG to PNG and update the nounPng state
-      const png = await svg2png(svg, 512, 512);
-      setNounPng(png);
-    },
-    [modSeed, lastSeed],
-  );
+    // Convert SVG to PNG.
+    const png = await svg2png(svg, 512, 512);
+    setNounPng(png);
+  }, [modSeed, lastSeed]);
 
-  // Function to create trait options for the dropdown.
-  const traitOptions = trait => {
+  // Function to create trait options for the dropdowns.
+  const traitOptions = (trait) => {
     return Array.from(Array(trait.traitNames.length + 1)).map((_, index) => {
       const traitName = trait.traitNames[index - 1];
       const parsedTitle = index === 0 ? 'Random' : parseTraitName(traitName);
@@ -89,13 +81,13 @@ const Mint = () => {
         </option>
       );
     });
-  };  
+  };
 
-  // Handles the selection of traits and updates the modSeed state.
+  // Handler for trait selection changes.
   const traitButtonHandler = (trait, traitIndex) => {
-    setModSeed(prev => {
+    setModSeed((prev) => {
       if (traitIndex < 0) {
-        let state = { ...prev };
+        const state = { ...prev };
         delete state[trait.title];
         return state;
       }
@@ -106,60 +98,64 @@ const Mint = () => {
     });
   };
 
-// useEffect hook to initialize trait data and images on component mount.
-    useEffect(() => {
-        const traitTitles = ['background', 'head', 'glasses'];
-        const traitNames = [
-          ['cool', 'warm'],
-          ...['heads', 'glasses'].map(category => {
-            return ImageData.images[category].map(imageData => imageData.filename);
-          }),
-        ];
-        setTraits(
-          traitTitles.map((title, index) => {
-            return {
-              title: title,
-              traitNames: traitNames[index],
-            };
-          }),
-        );
+  // Initialize traits and generate the initial noun image.
+  useEffect(() => {
+    const traitTitles = ['background', 'head', 'glasses'];
+    const traitNames = [
+      ['cool', 'warm'],
+      ...['heads', 'glasses'].map((category) => {
+        return ImageData.images[category].map((imageData) => imageData.filename);
+      }),
+    ];
+    setTraits(
+      traitTitles.map((title, index) => {
+        return {
+          title: title,
+          traitNames: traitNames[index],
+        };
+      }),
+    );
 
-        generateNounSvg();
-        }, [generateNounSvg, modSeed]); 
+    generateNounSvg();
+  }, [generateNounSvg, modSeed]);
 
-// JSX rendering the component UI.        
+  // Render the component UI.
   return (
     <>
-
-      <div className="flex flex-col h-[90vh] gap-3 pt-3 items-center justify-center md:flex-row md:items-center overflow-hidden">
-
+      <div className="flex flex-col md:flex-row h-[90vh] gap-3 pt-3 items-center justify-center overflow-hidden">
         {/* Nouncillor Display Area */}
-        <div className="flex-1 flex items-center justify-center bg-gray-500 p-0 md:pl-4 mt-12 md:mt-0 border border-gray-400 shadow h-full">
+        <div className="flex-1 flex items-center justify-center bg-gray-500 md:pl-4 mt-12 md:mt-0 border border-gray-400 shadow h-full">
           {nounSvg && (
             <div className="w-full h-full flex justify-center items-center">
-              {/* Responsive image */}
-              <Nouncillor imgPath={`data:image/svg+xml;base64,${btoa(nounSvg)}`} alt="nouncillor" className="max-w-full max-h-full object-contain" />
+              <Nouncillor
+                imgPath={`data:image/svg+xml;base64,${btoa(nounSvg)}`}
+                alt="nouncillor"
+                className="max-w-full max-h-full object-contain"
+              />
             </div>
           )}
         </div>
 
         {/* Configuration Area */}
-        <div className="flex-1 flex flex-col overflow-auto p-0 md:pl-4 bg-gray-400 border border-gray-400 h-full gap-2">
-          {
-            traits && traits.map((trait, index) => (
+        <div className="flex-1 flex flex-col overflow-auto p-4 md:pl-4 bg-gray-400 border border-gray-400 h-full gap-2">
+          {traits &&
+            traits.map((trait, index) => (
               <div key={index} className="px-4 py-2">
                 {/* Label for each trait dropdown */}
-                <label htmlFor={`floatingSelect-${index}`} className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor={`floatingSelect-${index}`}
+                  className="block text-sm font-medium text-gray-700"
+                >
                   {traitKeyToLocalizedTraitKeyFirstLetterCapitalized(trait.title)}
                 </label>
                 {/* Dropdown select for traits */}
                 <select
                   id={`floatingSelect-${index}`}
-                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className="mt-1 w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   value={trait.traitNames[selectIndexes?.[trait.title]] ?? -1}
                   onChange={(e) => {
                     const selectedIndex = e.currentTarget.selectedIndex;
-                    traitButtonHandler(trait, selectedIndex - 1); // Adjust for 'random' option
+                    traitButtonHandler(trait, selectedIndex - 1); // Adjust for 'Random' option
                     setSelectIndexes({
                       ...selectIndexes,
                       [trait.title]: selectedIndex - 1,
@@ -169,15 +165,14 @@ const Mint = () => {
                   {traitOptions(trait)}
                 </select>
               </div>
-            ))
-          }
+            ))}
 
-          {/* Mint Button section */}
+          {/* Mint Button Section */}
           <div className="mt-auto">
             <button
-              className="bg-gray-200 text-black font-medium py-2 px-4 w-full rounded border border-gray-400 shadow hover:bg-gray-300"
+              className="w-full py-2 px-4 bg-gray-200 text-black font-medium border border-gray-400 rounded shadow hover:bg-gray-300 disabled:bg-gray-300 disabled:text-gray-500"
               onClick={sendTx}
-              type="mint"
+              type="button"
               disabled={loading}
             >
               {loading ? 'Minting...' : 'Mint'}
@@ -187,7 +182,6 @@ const Mint = () => {
       </div>
     </>
   );
-
-        }
+};
 
 export default Mint;
