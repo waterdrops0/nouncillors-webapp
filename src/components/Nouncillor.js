@@ -21,11 +21,11 @@ export const LoadingNoun = () => {
 const Nouncillor = (props) => {
   const { imgPath, alt, className } = props;
   return (
-    <div className={""}>
+    <div className="relative w-full h-full flex justify-center items-center">
       <img
         src={imgPath ? imgPath : loadingNoun}
         alt={alt}
-        className={`w-full h-full align-middle rendering-pixelated ${className || ''}`}
+        className={`max-w-full max-h-full object-contain `}
       />
     </div>
   );

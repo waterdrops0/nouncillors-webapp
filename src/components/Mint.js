@@ -120,27 +120,31 @@ const Mint = () => {
   }, [generateNounSvg, modSeed]);
 
   // Render the component UI.
-  return (
-    <>
-      <div className="flex flex-col md:flex-row h-[90vh] gap-3 pt-3 items-center justify-center overflow-hidden">
-        {/* Nouncillor Display Area */}
-        <div className="flex-1 flex items-center justify-center bg-gray-500 md:pl-4 mt-12 md:mt-0 border border-gray-400 shadow h-full">
+// Render the component UI.
+return (
+  <>
+    <div className="flex flex-col md:flex-row h-[90vh] pt-3 items-center justify-center overflow-hidden">
+      {/* Nouncillor Display Area */}
+      <div className="flex-1">
+        <div className="h-full flex justify-center items-center">
           {nounSvg && (
-            <div className="w-full h-full flex justify-center items-center">
+            <div className="w-full h-full max-w-[80%] max-h-[80%] flex justify-center items-center">
               <Nouncillor
                 imgPath={`data:image/svg+xml;base64,${btoa(nounSvg)}`}
                 alt="nouncillor"
-                className="max-w-full max-h-full object-contain"
+                className="object-contain"
               />
             </div>
           )}
         </div>
+      </div>
 
-        {/* Configuration Area */}
-        <div className="flex-1 flex flex-col overflow-auto p-4 md:pl-4 bg-gray-400 border border-gray-400 h-full gap-2">
+      {/* Configuration Area */}
+      <div className="flex-1 flex justify-center items-center">
+        <div className="max-w-[80%] max-h-[80%] flex flex-col overflow-auto bg-prototype-600 bg-opacity-15">
           {traits &&
             traits.map((trait, index) => (
-              <div key={index} className="px-4 py-2">
+              <div key={index} className="px-4 py-2 w-full">
                 {/* Label for each trait dropdown */}
                 <label
                   htmlFor={`floatingSelect-${index}`}
@@ -168,7 +172,7 @@ const Mint = () => {
             ))}
 
           {/* Mint Button Section */}
-          <div className="mt-auto">
+          <div className="mt-auto w-full">
             <button
               className="w-full py-2 px-4 bg-gray-200 text-black font-medium border border-gray-400 rounded shadow hover:bg-gray-300 disabled:bg-gray-300 disabled:text-gray-500"
               onClick={sendTx}
@@ -180,8 +184,11 @@ const Mint = () => {
           </div>
         </div>
       </div>
-    </>
-  );
+    </div>
+  </>
+);
+
+
 };
 
 export default Mint;
