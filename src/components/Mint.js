@@ -128,69 +128,66 @@ const Mint = () => {
         }, [generateNounSvg, modSeed]); 
 
 // JSX rendering the component UI.        
-return (
-  <>
-      <div className="flex flex-col h-[90vh] gap-3 items-center justify-center md:flex-row">
+  return (
+    <>
 
+      <div className="flex flex-col h-[90vh] gap-3 pt-3 items-center justify-center md:flex-row md:items-center overflow-hidden">
 
-        {/* Left Half: Main Content Area for Displaying Generated Noun */}
-        <div className="w-2/3 overflow-hidden bg-gray-500 p-4 mt-12 md:mt-0 md:w-1/3 border border-gray-400 shadow">
+        {/* Nouncillor Display Area */}
+        <div className="flex-1 flex items-center justify-center bg-gray-500 p-0 md:pl-4 mt-12 md:mt-0 border border-gray-400 shadow h-full">
           {nounSvg && (
-            <div className="">
-              <Nouncillor imgPath={`data:image/svg+xml;base64,${btoa(nounSvg)}`} alt="nouncillor" className="" />
+            <div className="w-full h-full flex justify-center items-center">
+              {/* Responsive image */}
+              <Nouncillor imgPath={`data:image/svg+xml;base64,${btoa(nounSvg)}`} alt="nouncillor" className="max-w-full max-h-full object-contain" />
             </div>
           )}
         </div>
 
-        {/* Right Half: Sidebar for Traits */}
-        <div className="flex flex-col w-2/3 overflow-auto p-4 bg-gray-400 md:w-1/3 gap-2 border border-gray-400">
-               {
-                  traits && traits.map((trait, index) => (
-                    <div key={index} className="col-span-12 sm:col-span-6 lg:col-span-4 px-4 py-2">
-                      {/*Label for each trait dropdown*/}
-                      <label htmlFor={`floatingSelect-${index}`} className="block text-sm font-medium text-gray-700">
-                        {traitKeyToLocalizedTraitKeyFirstLetterCapitalized(trait.title)}
-                      </label>
-                      {/*Dropdown select for traits*/}
-                      <select
-                        id={`floatingSelect-${index}`}
-                        className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        value={trait.traitNames[selectIndexes?.[trait.title]] ?? -1}
-                        onChange={(e) => {
-                          const selectedIndex = e.currentTarget.selectedIndex;
-                          // Handling trait selection change
-                          traitButtonHandler(trait, selectedIndex - 1); // Adjust for 'random' option
-                          // Updating state for selected index
-                          setSelectIndexes({
-                            ...selectIndexes,
-                            [trait.title]: selectedIndex - 1,
-                          });
-                        }}
-                      >
-                        {traitOptions(trait)}
-                      </select>
-                    </div>
-                  ))
-                }
+        {/* Configuration Area */}
+        <div className="flex-1 flex flex-col overflow-auto p-0 md:pl-4 bg-gray-400 border border-gray-400 h-full gap-2">
+          {
+            traits && traits.map((trait, index) => (
+              <div key={index} className="px-4 py-2">
+                {/* Label for each trait dropdown */}
+                <label htmlFor={`floatingSelect-${index}`} className="block text-sm font-medium text-gray-700">
+                  {traitKeyToLocalizedTraitKeyFirstLetterCapitalized(trait.title)}
+                </label>
+                {/* Dropdown select for traits */}
+                <select
+                  id={`floatingSelect-${index}`}
+                  className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  value={trait.traitNames[selectIndexes?.[trait.title]] ?? -1}
+                  onChange={(e) => {
+                    const selectedIndex = e.currentTarget.selectedIndex;
+                    traitButtonHandler(trait, selectedIndex - 1); // Adjust for 'random' option
+                    setSelectIndexes({
+                      ...selectIndexes,
+                      [trait.title]: selectedIndex - 1,
+                    });
+                  }}
+                >
+                  {traitOptions(trait)}
+                </select>
+              </div>
+            ))
+          }
 
-              
-          {/*Mint Button section*/}        
-          <div className="">
-
-            <button 
-              className="bg-gray-200 text-black font-medium py-2 px-4 w-full rounded border border-gray-400 shadow hover:bg-gray-300" 
-              onClick={sendTx} 
-              type="mint" 
+          {/* Mint Button section */}
+          <div className="mt-auto">
+            <button
+              className="bg-gray-200 text-black font-medium py-2 px-4 w-full rounded border border-gray-400 shadow hover:bg-gray-300"
+              onClick={sendTx}
+              type="mint"
               disabled={loading}
             >
               {loading ? 'Minting...' : 'Mint'}
             </button>
-        
           </div>
         </div>
       </div>
-  </>
-);
+    </>
+  );
+
         }
 
 export default Mint;
