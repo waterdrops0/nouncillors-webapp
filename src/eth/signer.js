@@ -85,7 +85,7 @@ async function signMetaTxRequest(signer, forwarder, input) {
   const toSign = await buildTypedData(forwarder, request);
   console.log("The request toSign is: ", toSign);
   const signature = await signTypedData(signer, input.from, toSign);
-  return { signature, request };
+  return { request, signature };
 }
 
 // Export relevant functions for external use

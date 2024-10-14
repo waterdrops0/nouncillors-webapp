@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, useRef } from 'react';
 import { getNounData, getRandomNounSeed } from './Utils/utils.js';
 import ImageData from '../data/image-data.json';
 import { buildSVG } from './Utils/svg-builder.js';
@@ -35,7 +35,7 @@ const Mint = () => {
   const [nounPng, setNounPng] = useState(null);
   const [nounSvg, setNounSvg] = useState([]);
   const [modSeed, setModSeed] = useState({});
-  const [lastSeed, setLastSeed] = useState({});
+  const lastSeed = useRef({});
   const [traits, setTraits] = useState([]);
   const [selectIndexes, setSelectIndexes] = useState({});
 
@@ -59,16 +59,16 @@ const Mint = () => {
 
   // Function to generate the noun SVG and PNG images.
   const generateNounSvg = React.useCallback(async () => {
-    const seed = { ...getRandomNounSeed(), ...lastSeed, ...modSeed };
+    const seed = { ...getRandomNounSeed(), ...lastSeed.current, ...modSeed };
     const { parts, background } = getNounData(seed);
     const svg = buildSVG(parts, encoder.data.palette, background);
     setNounSvg([svg]);
-    setLastSeed(seed);
+    lastSeed.current = seed;
 
     // Convert SVG to PNG.
     const png = await svg2png(svg, 512, 512);
     setNounPng(png);
-  }, [modSeed, lastSeed]);
+  }, [modSeed]);
 
   // Function to create trait options for the dropdowns.
   const traitOptions = (trait) => {
@@ -117,9 +117,8 @@ const Mint = () => {
     );
 
     generateNounSvg();
-  }, [generateNounSvg, modSeed]);
+  }, [modSeed]);
 
-  // Render the component UI.
 // Render the component UI.
 return (
   <>
@@ -179,7 +178,7 @@ return (
               type="button"
               disabled={loading}
             >
-              {loading ? 'Minting...' : 'Mint'}
+              {loading ? 'Minting...' : 'Take him home !'}
             </button>
           </div>
         </div>
