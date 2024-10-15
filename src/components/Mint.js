@@ -178,7 +178,7 @@ return (
               type="button"
               disabled={loading}
             >
-              {loading ? 'Minting...' : 'Mint Nouncillor !'}
+              {loading ? 'Minting...' : 'Join Nouncil !'}
             </button>
           </div>
         </div>
