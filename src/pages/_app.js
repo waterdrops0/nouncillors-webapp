@@ -6,7 +6,7 @@ function App({ Component, pageProps }) {
   return (
     <Layout>
       <Head>
-        <title>Mint-Interface</title>
+        <title>Mint</title>
       </Head>
       
       <Component {...pageProps} />
