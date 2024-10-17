@@ -6,7 +6,7 @@ import { fetchProof } from './fetchProof';
 // Function to send a meta-transaction
 async function sendMetaTx(receiver, provider, signer, proof, seed) {
   // URL for the OpenZeppelin Defender relayer webhook
-  const url = 'https://api.defender.openzeppelin.com/actions/918b410d-1145-4ebf-8826-f11ded770508/runs/webhook/9fe28a70-5694-4a7d-9ee8-09682f0eb14f/FU929rLHXzVc6B35CdgB8J';
+  const url = 'https://api.defender.openzeppelin.com/actions/918b410d-1145-4ebf-8826-f11ded770508/runs/webhook/9fe28a70-5694-4a7d-9ee8-09682f0eb14f/ToUaJPDC8xagbidU1qwFgZ';
 
   if (!url) throw new Error(`Missing relayer url`);
 
