@@ -8,6 +8,9 @@ import Nouncillor from './Nouncillor.js';
 import { mint } from '../eth/mint.js';
 import { EthereumContext } from '../eth/context.js';
 import { toast } from 'react-toastify';
+import logo from '../assets/logo.webp';
+import Image from 'next/image'
+
 
 // Initialize the PNGCollectionEncoder with the image palette.
 const encoder = new PNGCollectionEncoder(ImageData.palette);
@@ -122,12 +125,42 @@ const Mint = () => {
 // Render the component UI.
 return (
   <>
-    <div className="flex flex-col md:flex-row h-[90vh] pt-3 items-center justify-center overflow-hidden">
+
+    {/* Top Bar */}
+  <div className="flex items-center justify-between px-4 py-2 bg-white shadow-md">
+    {/* Logo on the left */}
+    <Image
+      src={logo}
+      alt="Logo"
+      // width={500} automatically provided
+      // height={500} automatically provided
+      // blurDataURL="data:..." automatically provided
+      // placeholder="blur" // Optional blur-up while loading
+    />
+
+    {/* Right side: network display and connect wallet button */}
+    <div className="flex items-center">
+      {/* Network display */}
+      <div className="mr-4 text-gray-700">
+        Sepolia
+      </div>
+      {/* Connect wallet button */}
+      <button
+        className="py-2 px-4 bg-blue-500 text-white font-medium rounded hover:bg-blue-600"
+        //onClick={connectWallet}
+      >
+        Connect Wallet
+      </button>
+    </div>
+  </div>
+    <div className="flex flex-col md:flex-row h-[100vh] pt-3 items-center justify-center overflow-hidden bg-gradient-to-t from-sky-100 from-1%">
+      
+      
       {/* Nouncillor Display Area */}
       <div className="flex-1">
-        <div className="h-full flex justify-center items-center">
+        <div className="h-full w-full flex justify-center items-center">
           {nounSvg && (
-            <div className="w-full h-full max-w-[80%] max-h-[80%] flex justify-center items-center">
+            <div className="max-w-[80%] max-h-[80%] flex justify-center items-center">
               <Nouncillor
                 imgPath={`data:image/svg+xml;base64,${btoa(nounSvg)}`}
                 alt="nouncillor"

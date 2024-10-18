@@ -8,3 +8,6 @@
   src: url('/fonts/CrimsonPro.ttf') format('truetype');
 }
 
+.mask-image {
+  mask-image: radial-gradient(circle, white 90%, transparent 100%);
+}
