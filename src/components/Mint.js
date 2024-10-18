@@ -125,7 +125,7 @@ const Mint = () => {
 // Render the component UI.
 return (
   <>
-<div className="bg-gradient-to-t from-sky-100 from-1%">
+<div className="bg-white">
     {/* Top Bar */}
   <div className="flex items-center justify-between px-4 py-2">
     {/* Logo on the left */}
