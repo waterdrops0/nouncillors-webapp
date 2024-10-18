@@ -125,17 +125,14 @@ const Mint = () => {
 // Render the component UI.
 return (
   <>
-
+<div className="bg-gradient-to-t from-sky-100 from-1%">
     {/* Top Bar */}
-  <div className="flex items-center justify-between px-4 py-2 bg-white shadow-md">
+  <div className="flex items-center justify-between px-4 py-2">
     {/* Logo on the left */}
     <Image
       src={logo}
       alt="Logo"
-      // width={500} automatically provided
-      // height={500} automatically provided
-      // blurDataURL="data:..." automatically provided
-      // placeholder="blur" // Optional blur-up while loading
+      width={90} automatically provided
     />
 
     {/* Right side: network display and connect wallet button */}
@@ -153,7 +150,7 @@ return (
       </button>
     </div>
   </div>
-    <div className="flex flex-col md:flex-row h-[100vh] pt-3 items-center justify-center overflow-hidden bg-gradient-to-t from-sky-100 from-1%">
+    <div className="flex flex-col md:flex-row h-[100vh] pt-3 items-center justify-center overflow-hidden">
       
       
       {/* Nouncillor Display Area */}
@@ -173,7 +170,7 @@ return (
 
       {/* Configuration Area */}
       <div className="flex-1 flex justify-center items-center">
-        <div className="max-w-[80%] max-h-[80%] flex flex-col overflow-auto bg-prototype-600 bg-opacity-15">
+        <div className="max-w-[80%] flex flex-col overflow-auto bg-prototype-600 bg-opacity-75">
           {traits &&
             traits.map((trait, index) => (
               <div key={index} className="px-4 py-2 w-full">
@@ -216,6 +213,7 @@ return (
           </div>
         </div>
       </div>
+    </div>
     </div>
   </>
 );
