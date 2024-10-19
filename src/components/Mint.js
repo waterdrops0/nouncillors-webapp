@@ -1,45 +1,39 @@
-import React, { useEffect, useState, useContext, useRef } from 'react';
-import { getNounData, getRandomNounSeed } from './Utils/utils.js';
-import ImageData from '../data/image-data.json';
-import { buildSVG } from './Utils/svg-builder.js';
-import { svg2png } from './Utils/svg2png';
-import { PNGCollectionEncoder } from './Utils/png-collection-encoder.js';
-import Nouncillor from './Nouncillor.js';
-import { mint } from '../eth/mint.js';
-import { toast } from 'react-toastify';
-import logo from '../assets/logo.webp';
-import Image from 'next/image'
-import { ethers } from 'ethers';
-
-import { ConnectButton } from '@rainbow-me/rainbowkit';
-
-import { usePublicClient, useWalletClient, useAccount } from 'wagmi';
-
+import React, { useEffect, useState, useContext, useRef } from "react";
+import { getNounData, getRandomNounSeed } from "./Utils/utils.js";
+import ImageData from "../data/image-data.json";
+import { buildSVG } from "./Utils/svg-builder.js";
+import { svg2png } from "./Utils/svg2png";
+import { PNGCollectionEncoder } from "./Utils/png-collection-encoder.js";
+import Nouncillor from "./Nouncillor.js";
+import { mint } from "../eth/mint.js";
+import { toast } from "react-toastify";
+import logo from "../assets/logo.webp";
+import Image from "next/image";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { useAccount } from "wagmi";
 
 // Initialize the PNGCollectionEncoder with the image palette.
 const encoder = new PNGCollectionEncoder(ImageData.palette);
 
 // Utility functions for parsing and formatting trait names.
 const parseTraitName = (partName) =>
-  capitalizeFirstLetter(partName.substring(partName.indexOf('-') + 1));
+  capitalizeFirstLetter(partName.substring(partName.indexOf("-") + 1));
 
 const capitalizeFirstLetter = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
 const traitKeyToLocalizedTraitKeyFirstLetterCapitalized = (s) => {
   const traitMap = new Map([
-    ['background', 'Background'],
-    ['head', 'Head'],
-    ['glasses', 'Glasses'],
+    ["background", "Background"],
+    ["head", "Head"],
+    ["glasses", "Glasses"],
   ]);
   return traitMap.get(s);
 };
 
 // The Mint component.
 const Mint = () => {
-
-  const publicClient = usePublicClient(); // Public read-only provider
   const { address, chain, isConnected } = useAccount(); // Get connected account info
-  console.log('address', address);
+  console.log("address", address);
 
   // State hooks.
   const [loading, setLoading] = useState(false);
@@ -55,31 +49,25 @@ const Mint = () => {
     setLoading(true);
     try {
       // Check if the wallet is connected
-      if (!isConnected) throw new Error('Please connect your wallet.');
+      if (!isConnected) throw new Error("Please connect your wallet.");
 
       // Check if the user is on the correct network
       if (chain?.id !== 11155111) {
-        throw new Error('Please switch to the Sepolia network.');
+        throw new Error("Please switch to the Sepolia network.");
       }
-
-
-      // Initialize ethers provider and signer
-      const provider = await new ethers.BrowserProvider(window.ethereum);
-
-      const signer = await provider.getSigner();
 
       const seed = { ...getRandomNounSeed(), ...modSeed };
 
       // Call the mint function
-      const response = await mint(signer, provider, seed);
+      const response = await mint(seed);
 
       const hash = response.hash;
       const onClick = hash
         ? () => window.open(`https://sepolia.etherscan.io/tx/${hash}`)
         : undefined;
-      toast('Transaction sent!', { type: 'info', onClick });
+      toast("Transaction sent!", { type: "info", onClick });
     } catch (err) {
-      toast(err.message || err, { type: 'error' });
+      toast(err.message || err, { type: "error" });
     } finally {
       setLoading(false);
     }
@@ -102,7 +90,7 @@ const Mint = () => {
   const traitOptions = (trait) => {
     return Array.from(Array(trait.traitNames.length + 1)).map((_, index) => {
       const traitName = trait.traitNames[index - 1];
-      const parsedTitle = index === 0 ? 'Random' : parseTraitName(traitName);
+      const parsedTitle = index === 0 ? "Random" : parseTraitName(traitName);
       return (
         <option key={index} value={traitName}>
           {parsedTitle}
@@ -128,11 +116,13 @@ const Mint = () => {
 
   // Initialize traits and generate the initial noun image.
   useEffect(() => {
-    const traitTitles = ['background', 'head', 'glasses'];
+    const traitTitles = ["background", "head", "glasses"];
     const traitNames = [
-      ['cool', 'warm'],
-      ...['heads', 'glasses'].map((category) => {
-        return ImageData.images[category].map((imageData) => imageData.filename);
+      ["cool", "warm"],
+      ...["heads", "glasses"].map((category) => {
+        return ImageData.images[category].map(
+          (imageData) => imageData.filename
+        );
       }),
     ];
     setTraits(
@@ -141,102 +131,97 @@ const Mint = () => {
           title: title,
           traitNames: traitNames[index],
         };
-      }),
+      })
     );
 
     generateNounSvg();
   }, [modSeed]);
 
-// Render the component UI.
-return (
-  <>
-<div className="bg-white">
-    {/* Top Bar */}
-  <div className="flex items-center justify-between px-4 py-2">
-    {/* Logo on the left */}
-    <Image
-      src={logo}
-      alt="Logo"
-      width={90} automatically provided
-    />
+  // Render the component UI.
+  return (
+    <>
+      <div className="bg-white">
+        {/* Top Bar */}
+        <div className="flex items-center justify-between px-5 py-5">
+          {/* Logo on the left */}
+          <div className="">
+            <Image src={logo} alt="Logo" width={91} automatically provided />
+          </div>
 
-    {/* Right side: network display and connect wallet button */}
-    <div className="flex items-center">
-
-      < ConnectButton />
-
-
-    </div>
-  </div>
-    <div className="flex flex-col md:flex-row h-[100vh] pt-3 items-center justify-center overflow-hidden">
-      
-      
-      {/* Nouncillor Display Area */}
-      <div className="flex-1">
-        <div className="h-full w-full flex justify-center items-center">
-          {nounSvg && (
-            <div className="max-w-[80%] max-h-[80%] flex justify-center items-center">
-              <Nouncillor
-                imgPath={`data:image/svg+xml;base64,${btoa(nounSvg)}`}
-                alt="nouncillor"
-                className="object-contain"
-              />
-            </div>
-          )}
+          {/* Right side: network display and connect wallet button */}
+          <div className="flex items-center">
+            <ConnectButton />
+          </div>
         </div>
-      </div>
+        <div className="flex flex-col md:flex-row h-[100vh] pt-3 items-center justify-center overflow-hidden">
+          {/* Nouncillor Display Area */}
+          <div className="flex-1">
+            <div className="h-full w-full flex justify-center items-center">
+              {nounSvg && (
+                <div className="max-w-[80%] max-h-[80%] flex justify-center items-center">
+                  <Nouncillor
+                    imgPath={`data:image/svg+xml;base64,${btoa(nounSvg)}`}
+                    alt="nouncillor"
+                    className="object-contain"
+                  />
+                </div>
+              )}
+            </div>
+          </div>
 
-      {/* Configuration Area */}
-      <div className="flex-1 flex justify-center items-center">
-        <div className="max-w-[80%] flex flex-col overflow-auto bg-prototype-600 bg-opacity-75">
-          {traits &&
-            traits.map((trait, index) => (
-              <div key={index} className="px-4 py-2 w-full">
-                {/* Label for each trait dropdown */}
-                <label
-                  htmlFor={`floatingSelect-${index}`}
-                  className="block text-sm font-medium text-gray-700"
+          {/* Configuration Area */}
+          <div className="flex-1 flex justify-center items-center">
+            <div className="max-w-[80%] flex flex-col overflow-auto bg-prototype-600 bg-opacity-75">
+              {traits &&
+                traits.map((trait, index) => (
+                  <div key={index} className="px-4 py-2 w-full">
+                    {/* Label for each trait dropdown */}
+                    <label
+                      htmlFor={`floatingSelect-${index}`}
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      {traitKeyToLocalizedTraitKeyFirstLetterCapitalized(
+                        trait.title
+                      )}
+                    </label>
+                    {/* Dropdown select for traits */}
+                    <select
+                      id={`floatingSelect-${index}`}
+                      className="mt-1 w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      value={
+                        trait.traitNames[selectIndexes?.[trait.title]] ?? -1
+                      }
+                      onChange={(e) => {
+                        const selectedIndex = e.currentTarget.selectedIndex;
+                        traitButtonHandler(trait, selectedIndex - 1); // Adjust for 'Random' option
+                        setSelectIndexes({
+                          ...selectIndexes,
+                          [trait.title]: selectedIndex - 1,
+                        });
+                      }}
+                    >
+                      {traitOptions(trait)}
+                    </select>
+                  </div>
+                ))}
+
+              {/* Mint Button Section */}
+              <div className="mt-auto w-full">
+                <button
+                  className="w-full py-2 px-4 bg-gray-200 text-black font-medium border border-gray-400 rounded shadow hover:bg-gray-300 disabled:bg-gray-300 disabled:text-gray-500"
+                  onClick={sendTx}
+                  type="button"
+                  disabled={loading}
                 >
-                  {traitKeyToLocalizedTraitKeyFirstLetterCapitalized(trait.title)}
-                </label>
-                {/* Dropdown select for traits */}
-                <select
-                  id={`floatingSelect-${index}`}
-                  className="mt-1 w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                  value={trait.traitNames[selectIndexes?.[trait.title]] ?? -1}
-                  onChange={(e) => {
-                    const selectedIndex = e.currentTarget.selectedIndex;
-                    traitButtonHandler(trait, selectedIndex - 1); // Adjust for 'Random' option
-                    setSelectIndexes({
-                      ...selectIndexes,
-                      [trait.title]: selectedIndex - 1,
-                    });
-                  }}
-                >
-                  {traitOptions(trait)}
-                </select>
+                  {loading ? "Minting..." : "Join Nouncil !"}
+                </button>
               </div>
-            ))}
-
-          {/* Mint Button Section */}
-          <div className="mt-auto w-full">
-            <button
-              className="w-full py-2 px-4 bg-gray-200 text-black font-medium border border-gray-400 rounded shadow hover:bg-gray-300 disabled:bg-gray-300 disabled:text-gray-500"
-              onClick={sendTx}
-              type="button"
-              disabled={loading}
-            >
-              {loading ? 'Minting...' : 'Join Nouncil !'}
-            </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    </div>
-  </>
-);
-
-
+    </>
+  );
 };
 
 export default Mint;

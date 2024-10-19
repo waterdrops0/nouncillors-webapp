@@ -1,5 +1,5 @@
 // Import Ethereum signature utility library
-const ethSigUtil = require('eth-sig-util');
+const ethSigUtil = require("eth-sig-util");
 
 // Override toJSON method of BigInt to return a string representation
 BigInt.prototype.toJSON = function () {
@@ -8,21 +8,21 @@ BigInt.prototype.toJSON = function () {
 
 // Define EIP712 domain structure for typed data signing
 const EIP712Domain = [
-  { name: 'name', type: 'string' },
-  { name: 'version', type: 'string' },
-  { name: 'chainId', type: 'uint256' },
-  { name: 'verifyingContract', type: 'address' }
+  { name: "name", type: "string" },
+  { name: "version", type: "string" },
+  { name: "chainId", type: "uint256" },
+  { name: "verifyingContract", type: "address" },
 ];
 
 // Define the structure for a forward request in EIP712
 const ForwardRequest = [
-  { name: 'from', type: 'address' },
-  { name: 'to', type: 'address' },
-  { name: 'value', type: 'uint256' },
-  { name: 'gas', type: 'uint256' },
-  { name: 'nonce', type: 'uint256' },
-  { name: 'deadline', type: 'uint48' },
-  { name: 'data', type: 'bytes' },
+  { name: "from", type: "address" },
+  { name: "to", type: "address" },
+  { name: "value", type: "uint256" },
+  { name: "gas", type: "uint256" },
+  { name: "nonce", type: "uint256" },
+  { name: "deadline", type: "uint48" },
+  { name: "data", type: "bytes" },
 ];
 
 // Prepare EIP712 typed data for meta transaction
@@ -33,28 +33,28 @@ function getMetaTxTypeData(chainId, verifyingContract) {
       ForwardRequest,
     },
     domain: {
-      name: 'NouncilForwarder',
-      version: '1',
+      name: "NouncilForwarder",
+      version: "1",
       chainId,
       verifyingContract,
     },
-    primaryType: 'ForwardRequest',
-  }
-};
+    primaryType: "ForwardRequest",
+  };
+}
 
 // Function to sign typed data using EIP712 standard
 async function signTypedData(signer, from, data) {
   // Sign using private key if signer is a string
-  if (typeof(signer) === 'string') {
-    const privateKey = Buffer.from(signer.replace(/^0x/, ''), 'hex');
+  if (typeof signer === "string") {
+    const privateKey = Buffer.from(signer.replace(/^0x/, ""), "hex");
     return ethSigUtil.signTypedMessage(privateKey, { data });
   }
 
   // If signer is not a private key, use RPC call to sign
   const isHardhat = data.domain.chainId == 31337;
   const [method, argData] = isHardhat
-    ? ['eth_signTypedData', data]
-    : ['eth_signTypedData_v4', JSON.stringify(data)]
+    ? ["eth_signTypedData", data]
+    : ["eth_signTypedData_v4", JSON.stringify(data)];
   return await signer.send(method, [from, argData]);
 }
 
@@ -65,8 +65,10 @@ async function getNonce(forwarder, address) {
 
 // Build a forward request with necessary parameters
 async function buildRequest(forwarder, input) {
-  const nonce = await getNonce(forwarder, input.from).then(nonce => nonce.toString());
-  const deadline = Math.floor(Date.now() / 1000) + 3600; 
+  const nonce = await getNonce(forwarder, input.from).then((nonce) =>
+    nonce.toString()
+  );
+  const deadline = Math.floor(Date.now() / 1000) + 3600;
   return { value: 0, gas: 1e6, nonce, deadline, ...input };
 }
 
@@ -89,7 +91,7 @@ async function signMetaTxRequest(signer, forwarder, input) {
 }
 
 // Export relevant functions for external use
-module.exports = { 
+module.exports = {
   signMetaTxRequest,
   buildRequest,
   buildTypedData,

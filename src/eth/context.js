@@ -1,4 +1,4 @@
-'use client'
-import { createContext } from 'react';
+"use client";
+import { createContext } from "react";
 
-export const EthereumContext = createContext({ });
+export const EthereumContext = createContext({});

@@ -1,14 +1,13 @@
-import { ethers } from 'ethers';
-import { createForwarderInstance } from './forwarder';
-import { createReceiverInstance } from './receiver';
-import { signMetaTxRequest } from './signer';
-import { fetchProof } from './fetchProof';
+import { ethers } from "ethers";
+import { createForwarderInstance } from "./forwarder";
+import { createReceiverInstance } from "./receiver";
+import { signMetaTxRequest } from "./signer";
+import { fetchProof } from "./fetchProof";
 
 // Function to send a meta-transaction
 async function sendMetaTx(receiver, provider, signer, proof, seed) {
   // URL for the OpenZeppelin Defender relayer webhook
-  const url = 'https://api.defender.openzeppelin.com/actions/46dc2e81-0722-4fdb-a340-74f402ed73e7/runs/webhook/9fe28a70-5694-4a7d-9ee8-09682f0eb14f/DXdzbMf1WiMu6qe7r4YLJJ';
-
+  const url = process.env.NEXT_PUBLIC_DEFENDER_WEBHOOK_URL;
   if (!url) throw new Error(`Missing relayer url`);
 
   // Create an instance of the forwarder contract
@@ -16,25 +15,33 @@ async function sendMetaTx(receiver, provider, signer, proof, seed) {
   // Get the address of the signer
   const from = await signer.getAddress();
   // Encode the mint function call with provided proof and seed
-  const data = receiver.interface.encodeFunctionData('mint', [proof, seed]);
+  const data = receiver.interface.encodeFunctionData("mint", [proof, seed]);
   // Get the address of the receiver contract
   const to = await receiver.getAddress();
 
   // Sign the meta transaction request
-  const request = await signMetaTxRequest(signer.provider, forwarder, { to, from, data }); 
+  const request = await signMetaTxRequest(signer.provider, forwarder, {
+    to,
+    from,
+    data,
+  });
 
-  console.log('THis is the final request object:', request);
+  console.log("This is the final request object:", request);
 
   // Send the request to the relayer
   return fetch(url, {
-    method: 'POST',
+    method: "POST",
     body: JSON.stringify(request),
-    headers: { 'Content-Type': 'application/json' },
+    headers: { "Content-Type": "application/json" },
   });
 }
 
 // Exported function to initiate minting process
-export async function mint(signer, provider, seed) {
+export async function mint(seed) {
+  // Initialize ethers provider and signer
+  const provider = await new ethers.BrowserProvider(window.ethereum);
+  const signer = await provider.getSigner();
+
   // Fetch proof for the minting process
   const proof = await fetchProof(await signer.getAddress());
   if (!proof) throw new Error(`Proof cannot be empty`);
