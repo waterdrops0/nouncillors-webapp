@@ -21,7 +21,7 @@ function App({ Component, pageProps }) {
         overlayBlur: 'small',
         accentColor: '#d94339',
         accentColorForeground: 'white',
-        borderRadius: 'none',
+        borderRadius: 'small',
         fontStack: 'system',
       })} >
             <Component {...pageProps} />
