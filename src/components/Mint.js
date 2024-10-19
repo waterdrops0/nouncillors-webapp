@@ -213,7 +213,7 @@ const Mint = () => {
                   type="button"
                   disabled={loading}
                 >
-                  {loading ? "Minting..." : "Join Nouncil !"}
+                  {loading ? "Minting..." : "Join Nouncil"}
                 </button>
               </div>
             </div>
