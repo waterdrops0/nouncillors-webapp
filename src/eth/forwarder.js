@@ -375,6 +375,6 @@ const abi = [
     }
   ];
 
-export function createInstance(provider) {
+export function createForwarderInstance(provider) {
   return new ethers.Contract(address, abi, provider);
 }

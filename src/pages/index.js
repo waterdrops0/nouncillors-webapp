@@ -1,6 +1,6 @@
 import { EthereumContext } from '../eth/context';
 import { createProvider } from '../eth/provider';
-import { createInstance } from '../eth/receiver';
+import { createReceiverInstance } from '../eth/receiver';
 
 import Mint from '../components/Mint';
 
@@ -10,7 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const MintPage = () => {
   const provider = createProvider();
-  const receiver = createInstance(provider);
+  const receiver = createReceiverInstance(provider);
   const ethereumContext = { provider, receiver };
 
   return (

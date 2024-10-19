@@ -6,10 +6,14 @@ import { svg2png } from './Utils/svg2png';
 import { PNGCollectionEncoder } from './Utils/png-collection-encoder.js';
 import Nouncillor from './Nouncillor.js';
 import { mint } from '../eth/mint.js';
-import { EthereumContext } from '../eth/context.js';
 import { toast } from 'react-toastify';
 import logo from '../assets/logo.webp';
 import Image from 'next/image'
+import { ethers } from 'ethers';
+
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+
+import { usePublicClient, useWalletClient, useAccount } from 'wagmi';
 
 
 // Initialize the PNGCollectionEncoder with the image palette.
@@ -32,9 +36,13 @@ const traitKeyToLocalizedTraitKeyFirstLetterCapitalized = (s) => {
 
 // The Mint component.
 const Mint = () => {
+
+  const publicClient = usePublicClient(); // Public read-only provider
+  const { address, chain, isConnected } = useAccount(); // Get connected account info
+  console.log('address', address);
+
   // State hooks.
   const [loading, setLoading] = useState(false);
-  const { receiver, provider } = useContext(EthereumContext);
   const [nounPng, setNounPng] = useState(null);
   const [nounSvg, setNounSvg] = useState([]);
   const [modSeed, setModSeed] = useState({});
@@ -42,12 +50,29 @@ const Mint = () => {
   const [traits, setTraits] = useState([]);
   const [selectIndexes, setSelectIndexes] = useState({});
 
-  // Function to handle the minting transaction.
+  // Function to handle the minting transaction
   const sendTx = async () => {
     setLoading(true);
     try {
+      // Check if the wallet is connected
+      if (!isConnected) throw new Error('Please connect your wallet.');
+
+      // Check if the user is on the correct network
+      if (chain?.id !== 11155111) {
+        throw new Error('Please switch to the Sepolia network.');
+      }
+
+
+      // Initialize ethers provider and signer
+      const provider = await new ethers.BrowserProvider(window.ethereum);
+
+      const signer = await provider.getSigner();
+
       const seed = { ...getRandomNounSeed(), ...modSeed };
-      const response = await mint(receiver, provider, seed);
+
+      // Call the mint function
+      const response = await mint(signer, provider, seed);
+
       const hash = response.hash;
       const onClick = hash
         ? () => window.open(`https://sepolia.etherscan.io/tx/${hash}`)
@@ -137,17 +162,10 @@ return (
 
     {/* Right side: network display and connect wallet button */}
     <div className="flex items-center">
-      {/* Network display */}
-      <div className="mr-4 text-gray-700">
-        Sepolia
-      </div>
-      {/* Connect wallet button */}
-      <button
-        className="py-2 px-4 bg-blue-500 text-white font-medium rounded hover:bg-blue-600"
-        //onClick={connectWallet}
-      >
-        Connect Wallet
-      </button>
+
+      < ConnectButton />
+
+
     </div>
   </div>
     <div className="flex flex-col md:flex-row h-[100vh] pt-3 items-center justify-center overflow-hidden">

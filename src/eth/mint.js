@@ -1,5 +1,6 @@
 import { ethers } from 'ethers';
-import { createInstance } from './forwarder';
+import { createForwarderInstance } from './forwarder';
+import { createReceiverInstance } from './receiver';
 import { signMetaTxRequest } from './signer';
 import { fetchProof } from './fetchProof';
 
@@ -11,7 +12,7 @@ async function sendMetaTx(receiver, provider, signer, proof, seed) {
   if (!url) throw new Error(`Missing relayer url`);
 
   // Create an instance of the forwarder contract
-  const forwarder = createInstance(provider);
+  const forwarder = createForwarderInstance(provider);
   // Get the address of the signer
   const from = await signer.getAddress();
   // Encode the mint function call with provided proof and seed
@@ -33,22 +34,13 @@ async function sendMetaTx(receiver, provider, signer, proof, seed) {
 }
 
 // Exported function to initiate minting process
-export async function mint(receiver, provider, seed) {
-  // Check for Ethereum provider in the browser
-  if (!window.ethereum) throw new Error(`User wallet not found`);
-  await window.ethereum.enable();
-
-  // Initialize ethers provider and signer
-  const userProvider = await new ethers.BrowserProvider(window.ethereum);
-  const userNetwork = await userProvider.getNetwork();
-  const signer = await userProvider.getSigner();
-
+export async function mint(signer, provider, seed) {
   // Fetch proof for the minting process
-  const proof = await fetchProof(signer.address);
+  const proof = await fetchProof(await signer.getAddress());
   if (!proof) throw new Error(`Proof cannot be empty`);
 
-  // Ensure the user is on the correct network
-  if (userNetwork.chainId !== 11155111n) throw new Error(`Please switch to Sepolia for signing`);
+  // Create the receiver contract instance connected to the signer
+  const receiver = createReceiverInstance(provider);
 
   // Send the meta transaction
   return sendMetaTx(receiver, provider, signer, proof, seed);

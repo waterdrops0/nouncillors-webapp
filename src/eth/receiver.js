@@ -517,6 +517,6 @@ const abi = [
     }
   ];
 
-export function createInstance(provider) {
+export function createReceiverInstance(provider) {
   return new ethers.Contract(address, abi, provider);
 }
