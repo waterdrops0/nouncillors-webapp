@@ -1,10 +1,12 @@
 import React from 'react';
+import Image from 'next/image';
+import loadingGif from '../assets/loading-skull-noun.gif';
 
 const Loading = () => {
+
   return (
     <div style={styles.loadingContainer}>
-      {/* Blank Screen or replace with GIF */}
-      {/* <img src="/loading.gif" alt="Loading..." style={styles.gif} /> */}
+      <Image src={loadingGif} alt="Loading..." style={styles.gif} />
     </div>
   );
 };
@@ -15,10 +17,10 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     height: '100vh',
-    backgroundColor: '#fff',  // Blank white background
   },
   gif: {
-    width: '100px',  // Size of the loading GIF
+    width: '150px',
+    height: 'auto',
   },
 };
 
