@@ -7,6 +7,8 @@ import "../styles/globals.css";
 import { getDefaultConfig } from '@rainbow-me/rainbowkit';
 import { http } from 'wagmi';
 import { mainnet, sepolia, } from 'wagmi/chains';
+import { ThemeProvider } from 'next-themes';
+
 
 const config = getDefaultConfig({
   appName: 'Join-Nouncil',
@@ -38,7 +40,9 @@ function App({ Component, pageProps }) {
         borderRadius: 'small',
         fontStack: 'system',
       })} >
+        <ThemeProvider attribute="class" defaultTheme="dark">
             <Component {...pageProps} />
+            </ThemeProvider>
           </RainbowKitProvider>
         </QueryClientProvider>
       </WagmiProvider>

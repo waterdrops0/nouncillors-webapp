@@ -12,6 +12,8 @@ import Image from "next/image";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
 import Loading from './Loading';
+import ThemeToggler from './ThemeToggler';
+
 
 // Initialize the PNGCollectionEncoder with the image palette.
 const encoder = new PNGCollectionEncoder(ImageData.palette);
@@ -30,6 +32,8 @@ const traitKeyToLocalizedTraitKeyFirstLetterCapitalized = (s) => {
   ]);
   return traitMap.get(s);
 };
+
+
 
 // The Mint component.
 const Mint = () => {
@@ -100,6 +104,7 @@ toast("Transaction sent!", {
 }
   };
 
+
   // Function to generate the noun SVG and PNG images.
   const generateNounSvg = React.useCallback(async () => {
     const seed = { ...getRandomNounSeed(), ...lastSeed.current, ...modSeed };
@@ -142,10 +147,14 @@ toast("Transaction sent!", {
   };
 
 useEffect(() => {
-  // Simulate page loading for 1 second, adjust duration or remove timeout for actual load
+
+  
   const timer = setTimeout(() => {
     setIsPageLoading(false);
-  }, 1000); // Adjust this delay if needed
+  }, 1000);
+
+  
+  
 
   const traitTitles = ["background", "head", "glasses"];
   const traitNames = [
@@ -178,17 +187,22 @@ useEffect(() => {
         // Show the loading component if isLoading is true
         <Loading />
       ) : (
-        <div className="bg-white">
+        <div className="">
           {/* Top Bar */}
           <div className="flex items-center justify-between px-5 py-5">
             {/* Logo on the left */}
             <div>
               <Image src={logo} alt="Logo" width={91} automatically provided />
             </div>
+            <div>
+
+  <ThemeToggler />
+
+    </div>
 
             {/* Right side: network display and connect wallet button */}
             <div className="flex items-center">
-              <ConnectButton />
+              <ConnectButton label='Connect'/>
             </div>
           </div>
           <div className="flex flex-col md:flex-row h-[100vh] pt-3 items-center justify-center overflow-hidden">
