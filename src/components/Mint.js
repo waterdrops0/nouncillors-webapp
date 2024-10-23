@@ -81,24 +81,29 @@ toast("Transaction sent!", {
 } catch (err) {
   const errorMessage = err.message || "An unexpected error occurred!";
   
-  toast(
-    <div style={{ display: 'flex', alignItems: 'center' }}>
-      <strong style={{ marginRight: '10px', color: '#d32f2f' }}>Error:</strong>
+toast(
+  <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap' }}>
+    <strong style={{ marginRight: '10px', color: '#d32f2f' }}>Error:</strong>
+    <span style={{ whiteSpace: 'normal', wordBreak: 'break-word' }}>
       {errorMessage}
-    </div>,
-    {
-      type: "error",
-      style: {
-        backgroundColor: '#ffebee',  // Light red background for error
-        color: '#d32f2f',           // Dark red text
-        fontSize: '14px',
-        padding: '10px',
-        borderRadius: '5px',
-      },
-      closeOnClick: true,          // Close the toast on click
-      autoClose: 5000,             // Auto close after 5 seconds
-    }
-  );
+    </span>
+  </div>,
+  {
+    type: "error",
+    style: {
+      backgroundColor: '#ffebee',  // Light red background for error
+      color: '#d32f2f',           // Dark red text
+      fontSize: '14px',
+      padding: '10px',
+      borderRadius: '5px',
+      maxWidth: '400px',           // Control the width to avoid too long lines
+      whiteSpace: 'normal',        // Allow the text to wrap normally
+      wordBreak: 'break-word',     // Break long words properly
+    },
+    closeOnClick: true,          // Close the toast on click
+    autoClose: 5000,             // Auto close after 5 seconds
+  }
+);
 } finally {
   setLoading(false);
 }
