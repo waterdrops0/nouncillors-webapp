@@ -15,7 +15,7 @@ async function sendMetaTx(receiver, provider, signer, proof, seed) {
   // Get the address of the signer
   const from = await signer.getAddress();
   // Encode the mint function call with provided proof and seed
-  const data = receiver.interface.encodeFunctionData("mint", [proof, seed]);
+  const data = receiver.interface.encodeFunctionData("mintWithProof", [proof, seed]);
   // Get the address of the receiver contract
   const to = await receiver.getAddress();
 
