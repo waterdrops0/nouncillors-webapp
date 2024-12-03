@@ -280,7 +280,7 @@ useEffect(() => {
               </div>
             </div>
           </div>
-          <RecruitmentProcess />
+        
           <Footer />
         </div>
       )}
