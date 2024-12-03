@@ -2,9 +2,10 @@ import React from 'react';
 
 const Footer = () => {
   return (
-    <footer className="py-4 bg-gray-800 text-white text-center">
-      <div className="container mx-auto">
-        <div className="flex justify-center space-x-6">
+    <footer className="py-4 bg-gray-800 text-white">
+      <div className="container mx-auto flex justify-between items-center px-4">
+        {/* Left side: Social Media Links */}
+        <div className="flex space-x-6">
           <a
             href="https://x.com/nouncil"
             target="_blank"
@@ -29,6 +30,11 @@ const Footer = () => {
           >
             Farcaster
           </a>
+        </div>
+
+        {/* Right side: Additional Text */}
+        <div className="text-right">
+          Nouncil ©2024 by Waterdrops. CC0
         </div>
       </div>
     </footer>
