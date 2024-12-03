@@ -13,6 +13,9 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
 import Loading from './Loading';
 import ThemeToggler from './ThemeToggler';
+import RecruitmentProcess from './RecruitmentProcess';
+import Footer from './Footer';
+
 
 
 // Initialize the PNGCollectionEncoder with the image palette.
@@ -277,6 +280,8 @@ useEffect(() => {
               </div>
             </div>
           </div>
+          <RecruitmentProcess />
+          <Footer />
         </div>
       )}
     </>
