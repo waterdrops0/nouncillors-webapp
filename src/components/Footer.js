@@ -6,7 +6,7 @@ const Footer = () => {
       <div className="container mx-auto">
         <div className="flex justify-center space-x-6">
           <a
-            href="https://twitter.com/yourprofile"
+            href="https://x.com/nouncil"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-blue-400"
@@ -14,7 +14,7 @@ const Footer = () => {
             Twitter
           </a>
           <a
-            href="https://discord.gg/yourserver"
+            href="https://discord.gg/8ynX9Yr2XR"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-indigo-400"
@@ -22,7 +22,7 @@ const Footer = () => {
             Discord
           </a>
           <a
-            href="https://farcaster.xyz/yourprofile"
+            href="https://warpcast.com/nouncil"
             target="_blank"
             rel="noopener noreferrer"
             className="hover:text-purple-400"
