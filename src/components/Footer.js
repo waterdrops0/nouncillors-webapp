@@ -33,7 +33,7 @@ const Footer = () => {
         </div>
 
         {/* Right side: Additional Text */}
-        <div className="text-right">
+        <div className="text-right text-sm">
           Nouncil ©2024 by Waterdrops. CC0
         </div>
       </div>
